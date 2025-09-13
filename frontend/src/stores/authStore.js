@@ -1,6 +1,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
+import {
+    login,
+    register,
+    logout,
+    refreshAccessToken,
+    updateAccountDetails,
+    updateAvatar,
+    updateCoverImage,
+} from "../services/auth";
 
 const useAuthStore = create(
     persist(
@@ -26,6 +35,22 @@ const useAuthStore = create(
                 } catch (error) {
                     set({
                         error: error.response?.data?.message || "Login failed",
+                        isLoading: false,
+                    });
+                }
+            },
+
+            register: async (formData) => {
+                set({ isLoading: true, error: null });
+                try {
+                    const response = await register(formData);
+                    const { user, accessToken, refreshToken } = response;
+                    set({ user, accessToken, refreshToken, isLoading: false });
+                } catch (error) {
+                    set({
+                        error:
+                            error.response?.data?.message ||
+                            "Registration failed",
                         isLoading: false,
                     });
                 }
@@ -65,6 +90,49 @@ const useAuthStore = create(
                         error:
                             error.response?.data?.message ||
                             "Token refresh failed",
+                        isLoading: false,
+                    });
+                }
+            },
+
+            updateAccount: async (details) => {
+                set({ isLoading: true, error: null });
+                try {
+                    const user = await updateAccountDetails(details);
+                    set({ user, isLoading: false });
+                } catch (error) {
+                    set({
+                        error: error.response?.data?.message || "Update failed",
+                        isLoading: false,
+                    });
+                }
+            },
+
+            updateAvatar: async (file) => {
+                set({ isLoading: true, error: null });
+                try {
+                    const user = await updateAvatar(file);
+                    set({ user, isLoading: false });
+                } catch (error) {
+                    set({
+                        error:
+                            error.response?.data?.message ||
+                            "Avatar update failed",
+                        isLoading: false,
+                    });
+                }
+            },
+
+            updateCoverImage: async (file) => {
+                set({ isLoading: true, error: null });
+                try {
+                    const user = await updateCoverImage(file);
+                    set({ user, isLoading: false });
+                } catch (error) {
+                    set({
+                        error:
+                            error.response?.data?.message ||
+                            "Cover image update failed",
                         isLoading: false,
                     });
                 }
