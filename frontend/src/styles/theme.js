@@ -5,10 +5,10 @@ const getTheme = (mode) =>
         palette: {
             mode,
             primary: {
-                main: "#1976d2", // Blue for buttons, links
+                main: "#1976d2",
             },
             secondary: {
-                main: "#d81b60", // Pink for accents
+                main: "#d81b60",
             },
             background: {
                 default: mode === "light" ? "#f5f5f5" : "#121212",
