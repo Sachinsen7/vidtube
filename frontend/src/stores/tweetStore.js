@@ -6,7 +6,7 @@ import {
     deleteTweet,
 } from "../services/tweet";
 
-const useTweetStore = create((set) => ({
+export const useTweetStore = create((set) => ({
     tweets: [],
     isLoading: false,
     error: null,
