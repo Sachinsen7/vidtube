@@ -48,6 +48,6 @@ export const useComments = () => {
         setPage,
         addComment: handleAddComment,
         updateComment: handleUpdateComment,
-        deleteComment: handleAddComment,
+        deleteComment: handleDeleteComment,
     };
 };
