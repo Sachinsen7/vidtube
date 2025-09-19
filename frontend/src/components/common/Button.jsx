@@ -1,4 +1,3 @@
-import React from "react";
 import { Button as MuiButton } from "@mui/material";
 
 const Button = ({
@@ -8,7 +7,27 @@ const Button = ({
     ...props
 }) => {
     return (
-        <MuiButton variant={variant} color={color} {...props}>
+        <MuiButton
+            variant={variant}
+            color={color}
+            sx={{
+                backgroundColor:
+                    variant === "contained"
+                        ? "var(--primary-color)"
+                        : undefined,
+                color:
+                    variant === "contained"
+                        ? "#fcffff"
+                        : "var(--primary-color)",
+                "&:hover": {
+                    backgroundColor:
+                        variant === "contained"
+                            ? "var(--secondary-color)"
+                            : undefined,
+                },
+            }}
+            {...props}
+        >
             {children}
         </MuiButton>
     );
