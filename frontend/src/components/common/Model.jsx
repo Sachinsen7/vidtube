@@ -7,15 +7,20 @@ import {
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
 
-export const Model = ({ open, onClose, title, children, actions }) => {
+const Modal = ({ open, onClose, title, children, actions }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>
+            <DialogTitle sx={{ color: "var(--primary-color)" }}>
                 {title}
                 <IconButton
                     aria-label="close"
                     onClick={onClose}
-                    sx={{ position: "absolute", right: 8, top: 8 }}
+                    sx={{
+                        position: "absolute",
+                        right: 8,
+                        top: 8,
+                        color: "var(--secondary-color)",
+                    }}
                 >
                     <CloseIcon />
                 </IconButton>
@@ -25,3 +30,5 @@ export const Model = ({ open, onClose, title, children, actions }) => {
         </Dialog>
     );
 };
+
+export default Modal;
