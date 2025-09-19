@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { ThemeProvider } from "@mui/material";
 import useThemeStore from "./stores/themeStore";
 import getTheme, { setCSSVariables } from "./styles/theme";
