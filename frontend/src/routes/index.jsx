@@ -1,5 +1,5 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "../App";
+import React from "react";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import Home from "../pages/Home";
 import Video from "../pages/Video";
 import Playlist from "../pages/Playlist";
@@ -9,10 +9,16 @@ import Dashboard from "../pages/Dashboard";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
 
+const AppComponent = React.lazy(() => import("../App"));
+
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <App />,
+        element: (
+            <React.Suspense fallback={<div>Loading...</div>}>
+                <AppComponent />
+            </React.Suspense>
+        ),
         children: [
             { path: "/", element: <Home /> },
             { path: "/videos/:videoId", element: <Video /> },
