@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, CircularProgress, Alert } from "@mui/material";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { usePlaylists } from "../../hooks/usePlaylists";
 import Button from "../common/Button";
 import Input from "../common/Input";
