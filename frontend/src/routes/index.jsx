@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "../pages/Home";
 import Video from "../pages/Video";
 import Playlist from "../pages/Playlist";
@@ -8,6 +8,7 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
+import Layout from "../components/common/Layout";
 
 const AppComponent = React.lazy(() => import("../App"));
 
@@ -20,14 +21,19 @@ const router = createBrowserRouter([
             </React.Suspense>
         ),
         children: [
-            { path: "/", element: <Home /> },
-            { path: "/videos/:videoId", element: <Video /> },
-            { path: "/playlists/:playlistId", element: <Playlist /> },
-            { path: "/c/:username", element: <Channel /> },
-            { path: "/dashboard", element: <Dashboard /> },
-            { path: "/login", element: <Login /> },
-            { path: "/register", element: <Register /> },
-            { path: "*", element: <NotFound /> },
+            {
+                element: <Layout />,
+                children: [
+                    { path: "/", element: <Home /> },
+                    { path: "/videos/:videoId", element: <Video /> },
+                    { path: "/playlists/:playlistId", element: <Playlist /> },
+                    { path: "/c/:username", element: <Channel /> },
+                    { path: "/dashboard", element: <Dashboard /> },
+                    { path: "/login", element: <Login /> },
+                    { path: "/register", element: <Register /> },
+                    { path: "*", element: <NotFound /> },
+                ],
+            },
         ],
     },
 ]);
