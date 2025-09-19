@@ -15,10 +15,23 @@ export const useVideos = (params = {}) => {
         togglePublishStatus,
     } = useVideoStore();
     const [pages, setPages] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
-        fetchVideos({ pages, limit: 10, ...params });
-    }, [fetchVideos, pages, params]);
+        const loadVideos = async () => {
+            try {
+                const response = await fetchVideos({
+                    page,
+                    limit: 10,
+                    ...params,
+                });
+                if (response.length < 10) setHasMore(false);
+            } catch (err) {
+                setHasMore(false);
+            }
+        };
+        loadVideos();
+    }, [fetchVideos, page, params]);
 
     const handleFetchVideoById = useCallback(
         async (videoId) => {
@@ -62,6 +75,7 @@ export const useVideos = (params = {}) => {
         error,
         pages,
         setPages,
+        hasMore,
         fetchVideos: handleFetchVideoById,
         publishVideo: handlePublishVideo,
         updateVideo: handleUpdateVideo,
