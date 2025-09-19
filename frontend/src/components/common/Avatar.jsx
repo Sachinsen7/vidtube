@@ -1,3 +1,4 @@
+import React from "react";
 import { Avatar as MuiAvatar } from "@mui/material";
 
 const Avatar = ({ src, alt, size = 40, ...props }) => {
@@ -5,7 +6,11 @@ const Avatar = ({ src, alt, size = 40, ...props }) => {
         <MuiAvatar
             src={src}
             alt={alt}
-            sx={{ width: size, height: size }}
+            sx={{
+                width: size,
+                height: size,
+                border: `2px solid var(--success-color)`,
+            }}
             {...props}
         />
     );
