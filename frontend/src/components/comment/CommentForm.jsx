@@ -19,9 +19,18 @@ const CommentForm = ({ videoId }) => {
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ maxWidth: 600, mx: "auto", p: 2 }}
+            sx={{
+                maxWidth: 600,
+                mx: "auto",
+                p: 2,
+                backgroundColor: "var(--background-color)",
+            }}
         >
-            <Typography variant="h6" gutterBottom>
+            <Typography
+                variant="h6"
+                gutterBottom
+                sx={{ color: "var(--primary-color)" }}
+            >
                 Add a Comment
             </Typography>
             {error && (
