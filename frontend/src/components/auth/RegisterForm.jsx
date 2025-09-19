@@ -14,7 +14,6 @@ const RegisterForm = () => {
         avatar: null,
         coverImage: null,
     });
-
     const { register, isLoading, error } = useAuth();
     const navigate = useNavigate();
 
@@ -33,18 +32,25 @@ const RegisterForm = () => {
             if (value) data.append(key, value);
         });
         await register(data);
-        if (!error) {
-            navigate("/");
-        }
+        if (!error) navigate("/");
     };
 
     return (
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ maxWidth: 400, mx: "auto", p: 2 }}
+            sx={{
+                maxWidth: 400,
+                mx: "auto",
+                p: 2,
+                backgroundColor: "var(--background-color)",
+            }}
         >
-            <Typography variant="h5" gutterBottom>
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{ color: "var(--primary-color)" }}
+            >
                 Register
             </Typography>
             {error && (
@@ -108,3 +114,5 @@ const RegisterForm = () => {
         </Box>
     );
 };
+
+export default RegisterForm;
