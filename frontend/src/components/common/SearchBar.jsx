@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, TextField, CircularProgress } from "@mui/material";
+import { Grid, Box, TextField, CircularProgress } from "@mui/material";
 import { useSearch } from "../../hooks/useSearch";
 import VideoCard from "../video/VideoCard";
 
