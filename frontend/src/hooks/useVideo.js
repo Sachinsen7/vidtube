@@ -31,7 +31,7 @@ export const useVideos = (params = {}) => {
             }
         };
         loadVideos();
-    }, [fetchVideos, page, params]);
+    }, [fetchVideos, pages, params]);
 
     const handleFetchVideoById = useCallback(
         async (videoId) => {
