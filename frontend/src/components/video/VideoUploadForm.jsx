@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, CircularProgress, Alert } from "@mui/material";
-import { useVideos } from "../../hooks/useVideos";
+import { useVideos } from "../../hooks/useVideo";
 import Button from "../common/Button";
 import Input from "../common/Input";
 
