@@ -5,14 +5,21 @@ const getTheme = (mode) =>
         palette: {
             mode,
             primary: {
-                main: "#1976d2",
+                main: "#043664",
             },
             secondary: {
-                main: "#d81b60",
+                main: "#ff4d1a",
+            },
+            success: {
+                main: "#52711a",
             },
             background: {
-                default: mode === "light" ? "#f5f5f5" : "#121212",
+                default: mode === "light" ? "#fcffff" : "#121212",
                 paper: mode === "light" ? "#ffffff" : "#1e1e1e",
+            },
+            text: {
+                primary: mode === "light" ? "#043664" : "#fcffff",
+                secondary: mode === "light" ? "#52711a" : "#ff4d1a",
             },
         },
         typography: {
@@ -29,4 +36,16 @@ const getTheme = (mode) =>
         },
     });
 
+const setCSSVariables = (mode) => {
+    const root = document.documentElement;
+    root.style.setProperty("--primary-color", "#043664");
+    root.style.setProperty("--secondary-color", "#ff4d1a");
+    root.style.setProperty("--success-color", "#52711a");
+    root.style.setProperty(
+        "--background-color",
+        mode === "light" ? "#fcffff" : "#121212"
+    );
+};
+
 export default getTheme;
+export { setCSSVariables };
