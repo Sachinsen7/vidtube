@@ -1,16 +1,16 @@
 import React from "react";
 import { Box, Typography, Grid, CircularProgress, Alert } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { useVideos } from "../../hooks/useVideos";
+import { useVideos } from "../../hooks/useVideo";
 import VideoCard from "../video/VideoCard";
 
 const VideoList = () => {
-    const { videos, isLoading, error, page, setPage, hasMore } = useVideos({
+    const { videos, isLoading, error, pages, setPages, hasMore } = useVideos({
         userVideos: true,
     });
 
     const loadMore = () => {
-        if (hasMore) setPage(page + 1);
+        if (hasMore) setPages(pages + 1);
     };
 
     if (error) return <Alert severity="error">{error}</Alert>;
