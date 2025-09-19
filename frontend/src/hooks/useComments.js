@@ -12,10 +12,22 @@ export const useComments = () => {
         deleteComment,
     } = useCommentStore();
     const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
         if (videoId) {
-            fetchComments(videoId, { page, limit: 10 });
+            const loadComments = async () => {
+                try {
+                    const response = await fetchComments(videoId, {
+                        page,
+                        limit: 10,
+                    });
+                    if (response.length < 10) setHasMore(false);
+                } catch (err) {
+                    setHasMore(false);
+                }
+            };
+            loadComments();
         }
     }, [fetchComments, videoId, page]);
 
@@ -46,6 +58,7 @@ export const useComments = () => {
         error,
         page,
         setPage,
+        hasMore,
         addComment: handleAddComment,
         updateComment: handleUpdateComment,
         deleteComment: handleDeleteComment,
