@@ -29,7 +29,6 @@ const StatsWidget = () => {
             }
             setIsLoading(false);
         };
-
         if (user) fetchStats();
     }, [user]);
 
@@ -38,14 +37,24 @@ const StatsWidget = () => {
     if (!stats) return null;
 
     return (
-        <Card sx={{ mb: 2 }}>
+        <Card sx={{ mb: 2, backgroundColor: "var(--background-color)" }}>
             <CardContent>
-                <Typography variant="h6" gutterBottom>
+                <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ color: "var(--primary-color)" }}
+                >
                     Channel Statistics
                 </Typography>
-                <Typography>Subscribers: {stats.subscribers || 0}</Typography>
-                <Typography>Total Views: {stats.totalViews || 0}</Typography>
-                <Typography>Total Videos: {stats.totalVideos || 0}</Typography>
+                <Typography sx={{ color: "var(--secondary-color)" }}>
+                    Subscribers: {stats.subscribers || 0}
+                </Typography>
+                <Typography sx={{ color: "var(--secondary-color)" }}>
+                    Total Views: {stats.totalViews || 0}
+                </Typography>
+                <Typography sx={{ color: "var(--secondary-color)" }}>
+                    Total Videos: {stats.totalVideos || 0}
+                </Typography>
             </CardContent>
         </Card>
     );
