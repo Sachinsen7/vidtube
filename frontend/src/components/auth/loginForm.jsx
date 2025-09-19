@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Typography, CircularProgress, Alert } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth";
@@ -17,18 +17,25 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await login(formData);
-        if (!error) {
-            navigate("/");
-        }
+        if (!error) navigate("/");
     };
 
     return (
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ maxWidth: 400, mx: "auto", p: 2 }}
+            sx={{
+                maxWidth: 400,
+                mx: "auto",
+                p: 2,
+                backgroundColor: "var(--background-color)",
+            }}
         >
-            <Typography variant="h5" gutterBottom>
+            <Typography
+                variant="h5"
+                gutterBottom
+                sx={{ color: "var(--primary-color)" }}
+            >
                 Login
             </Typography>
             {error && (
