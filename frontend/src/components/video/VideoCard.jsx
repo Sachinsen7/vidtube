@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { Favorite, Comment } from "@mui/icons-material";
 import ReactPlayer from "react-player";
-import { useVideos } from "../../hooks/useVideo";
+import { useVideos } from "../../hooks/useVideos";
 import { formatDate } from "../../utils/formatDate";
 
-function VideoCard() {
+const VideoCard = ({ video }) => {
     const navigate = useNavigate();
     const { fetchVideos } = useVideos();
 
@@ -26,7 +26,11 @@ function VideoCard() {
         <Card
             component={motion.div}
             whileHover={{ scale: 1.02 }}
-            sx={{ maxWidth: 345, boxShadow: 3 }}
+            sx={{
+                maxWidth: 345,
+                boxShadow: 3,
+                backgroundColor: "var(--background-color)",
+            }}
             onClick={handleClick}
         >
             <CardMedia>
@@ -42,29 +46,42 @@ function VideoCard() {
                 </Box>
             </CardMedia>
             <CardContent>
-                <Typography variant="h6" component="div">
+                <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{ color: "var(--primary-color)" }}
+                >
                     {video.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                    variant="body2"
+                    sx={{ color: "var(--secondary-color)" }}
+                >
                     {video.owner.username} • {formatDate(video.createdAt)}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                    <IconButton>
+                    <IconButton sx={{ color: "var(--success-color)" }}>
                         <Favorite />
                     </IconButton>
-                    <Typography variant="body2">
+                    <Typography
+                        variant="body2"
+                        sx={{ color: "var(--primary-color)" }}
+                    >
                         {video.likes?.length || 0}
                     </Typography>
-                    <IconButton sx={{ ml: 2 }}>
+                    <IconButton sx={{ color: "var(--success-color)", ml: 2 }}>
                         <Comment />
                     </IconButton>
-                    <Typography variant="body2">
+                    <Typography
+                        variant="body2"
+                        sx={{ color: "var(--primary-color)" }}
+                    >
                         {video.comments?.length || 0}
                     </Typography>
                 </Box>
             </CardContent>
         </Card>
     );
-}
+};
 
 export default VideoCard;
