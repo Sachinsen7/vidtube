@@ -6,9 +6,13 @@ const Register = () => {
     return (
         <Box
             sx={{
-                backgroundColor: "var(--background-color)",
-                minHeight: "100vh",
-                p: 2,
+                width: "100%",
+                maxWidth: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: "60vh",
             }}
         >
             <Typography
