@@ -1,5 +1,18 @@
 import { useCallback } from "react";
 import useAuthStore from "../stores/authStore";
+import {
+    login,
+    register,
+    logout,
+    refreshAccessToken,
+    changePassword,
+    getCurrentUser,
+    getUserChannelProfile,
+    updateAccountDetails,
+    updateAvatar,
+    updateCoverImage,
+    getWatchHistory,
+} from "../services/auth";
 
 export const useAuth = () => {
     const {
@@ -8,56 +21,56 @@ export const useAuth = () => {
         refreshToken,
         isLoading,
         error,
-        login,
-        register,
-        logout,
-        refreshAccessToken,
+        login: loginStore,
+        register: registerStore,
+        logout: logoutStore,
+        refreshAccessToken: refreshAccessTokenStore,
         updateAccount,
-        updateAvatar,
-        updateCoverImage,
+        updateAvatar: updateAvatarStore,
+        updateCoverImage: updateCoverImageStore,
     } = useAuthStore();
 
-    const handleLogin = useCallback(
-        async (credientials) => {
-            login(credientials);
+    const loginUser = useCallback(
+        async (credentials) => {
+            await loginStore(credentials);
         },
-        [login]
+        [loginStore]
     );
 
-    const handleRegister = useCallback(
+    const registerUser = useCallback(
         async (formData) => {
-            await register(formData);
+            await registerStore(formData);
         },
-        [register]
+        [registerStore]
     );
 
-    const handleLogout = useCallback(async () => {
-        await logout();
-    }, [logout]);
+    const logoutUser = useCallback(async () => {
+        await logoutStore();
+    }, [logoutStore]);
 
-    const handleRefreshToken = useCallback(async () => {
-        await refreshAccessToken();
-    }, [refreshAccessToken]);
+    const refreshAccessToken = useCallback(async () => {
+        await refreshAccessTokenStore();
+    }, [refreshAccessTokenStore]);
 
-    const handleUpdateAccount = useCallback(
+    const updateUserAccount = useCallback(
         async (details) => {
             await updateAccount(details);
         },
         [updateAccount]
     );
 
-    const handleUpdateAvatar = useCallback(
+    const updateUserAvatar = useCallback(
         async (file) => {
-            await updateAvatar(file);
+            await updateAvatarStore(file);
         },
-        [updateAvatar]
+        [updateAvatarStore]
     );
 
-    const handleUpdateCoverImage = useCallback(
+    const updateUserCoverImage = useCallback(
         async (file) => {
-            await updateCoverImage(file);
+            await updateCoverImageStore(file);
         },
-        [updateCoverImage]
+        [updateCoverImageStore]
     );
 
     return {
@@ -66,12 +79,16 @@ export const useAuth = () => {
         refreshToken,
         isLoading,
         error,
-        login: handleLogin,
-        register: handleRegister,
-        logout: handleLogout,
-        refreshAccessToken: handleRefreshToken,
-        updateAccount: handleUpdateAccount,
-        updateAvatar: handleUpdateAvatar,
-        updateCoverImage: handleUpdateCoverImage,
+        login: loginUser,
+        register: registerUser,
+        logout: logoutUser,
+        refreshAccessToken: refreshAccessToken,
+        changePassword,
+        getCurrentUser,
+        getUserChannelProfile,
+        updateAccount: updateUserAccount,
+        updateAvatar: updateUserAvatar,
+        updateCoverImage: updateUserCoverImage,
+        getWatchHistory,
     };
 };
