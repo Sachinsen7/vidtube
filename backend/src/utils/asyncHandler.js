@@ -1,4 +1,4 @@
-//higer order function
+//higher order function
 
 const asyncHandler = (requestHandler) => {
     return (req, res, next) => {
