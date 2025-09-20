@@ -1,14 +1,26 @@
+// src/components/auth/LoginForm.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import {
+    Box,
+    Typography,
+    CircularProgress,
+    Alert,
+    useMediaQuery,
+} from "@mui/material";
 import { useAuth } from "../../hooks/useAuth";
 import Button from "../common/Button";
 import Input from "../common/Input";
 
 const LoginForm = () => {
-    const [formData, setFormData] = useState({ email: "", password: "" });
+    const [formData, setFormData] = useState({
+        email: "",
+        username: "",
+        password: "",
+    });
     const { login, isLoading, error } = useAuth();
     const navigate = useNavigate();
+    const isMobile = useMediaQuery("(max-width:600px)");
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,8 +28,12 @@ const LoginForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await login(formData);
-        if (!error) navigate("/");
+        try {
+            await login(formData);
+            navigate("/");
+        } catch (err) {
+            // Error is handled by useAuth hook
+        }
     };
 
     return (
@@ -25,16 +41,19 @@ const LoginForm = () => {
             component="form"
             onSubmit={handleSubmit}
             sx={{
-                maxWidth: 400,
+                maxWidth: { xs: "100%", sm: 400 },
+                width: "100%",
                 mx: "auto",
-                p: 2,
-                backgroundColor: "var(--background-color)",
+                p: { xs: 2, sm: 3 },
             }}
         >
             <Typography
-                variant="h5"
+                variant={isMobile ? "h6" : "h5"}
                 gutterBottom
-                sx={{ color: "var(--primary-color)" }}
+                sx={{
+                    color: "var(--primary-color)",
+                    textAlign: { xs: "center", sm: "left" },
+                }}
             >
                 Login
             </Typography>
@@ -48,6 +67,14 @@ const LoginForm = () => {
                 name="email"
                 type="email"
                 value={formData.email}
+                onChange={handleChange}
+                required
+                sx={{ mb: 2 }}
+            />
+            <Input
+                label="Username"
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
                 required
                 sx={{ mb: 2 }}
