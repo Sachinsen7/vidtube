@@ -40,10 +40,10 @@ const RegisterForm = () => {
             component="form"
             onSubmit={handleSubmit}
             sx={{
-                maxWidth: 400,
+                maxWidth: { xs: "100%", sm: 400 },
+                width: "100%",
                 mx: "auto",
                 p: 2,
-                backgroundColor: "var(--background-color)",
             }}
         >
             <Typography
