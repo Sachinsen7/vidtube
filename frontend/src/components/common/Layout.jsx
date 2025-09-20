@@ -14,7 +14,7 @@ import {
     ListItemText,
     useMediaQuery,
 } from "@mui/material";
-import { Menu as MenuIcon, Home as HomeIcon } from "@mui/icons-material";
+import { Menu as MenuIcon } from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth";
 // import logo from "../../assets/logo.png";
 
@@ -38,12 +38,16 @@ const Layout = () => {
             sx={{
                 width: 250,
                 p: 2,
-                backgroundColor: "var(--background-color)",
+                background: "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
             }}
         >
             <Typography
                 variant="h6"
-                sx={{ color: "var(--primary-color)", mb: 2 }}
+                sx={{
+                    color: "var(--primary-color)",
+                    mb: 2,
+                    fontWeight: "bold",
+                }}
             >
                 VidTube
             </Typography>
@@ -60,8 +64,44 @@ const Layout = () => {
                         sx={{ color: "var(--primary-color)" }}
                     />
                 </ListItem>
-                {user ? (
+                {user && (
                     <>
+                        <ListItem
+                            button
+                            onClick={() => {
+                                navigate("/subscriptions");
+                                setMobileOpen(false);
+                            }}
+                        >
+                            <ListItemText
+                                primary="Subscriptions"
+                                sx={{ color: "var(--primary-color)" }}
+                            />
+                        </ListItem>
+                        <ListItem
+                            button
+                            onClick={() => {
+                                navigate("/videos");
+                                setMobileOpen(false);
+                            }}
+                        >
+                            <ListItemText
+                                primary="Your Videos"
+                                sx={{ color: "var(--primary-color)" }}
+                            />
+                        </ListItem>
+                        <ListItem
+                            button
+                            onClick={() => {
+                                navigate("/upload");
+                                setMobileOpen(false);
+                            }}
+                        >
+                            <ListItemText
+                                primary="Upload Video"
+                                sx={{ color: "var(--primary-color)" }}
+                            />
+                        </ListItem>
                         <ListItem
                             button
                             onClick={() => {
@@ -77,7 +117,7 @@ const Layout = () => {
                         <ListItem
                             button
                             onClick={() => {
-                                navigate(`/c/${user.username}`);
+                                navigate("/profile");
                                 setMobileOpen(false);
                             }}
                         >
@@ -99,7 +139,8 @@ const Layout = () => {
                             />
                         </ListItem>
                     </>
-                ) : (
+                )}
+                {!user && (
                     <>
                         <ListItem
                             button
@@ -134,28 +175,28 @@ const Layout = () => {
     return (
         <Box
             sx={{
-                backgroundColor: "var(--background-color)",
+                background: "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
                 minHeight: "100vh",
                 width: "100%",
                 display: "flex",
                 flexDirection: "column",
             }}
         >
-            {/* Navigation Bar */}
             <AppBar
                 position="sticky"
                 sx={{
                     width: "100%",
-                    backgroundColor: "var(--primary-color)",
+                    background:
+                        "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
+                    boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
                 }}
             >
                 <Toolbar sx={{ flexWrap: "wrap" }}>
                     {isMobile && (
                         <IconButton
                             edge="start"
-                            color="inherit"
+                            sx={{ color: "#fcffff", mr: 2 }}
                             onClick={handleDrawerToggle}
-                            sx={{ mr: 2 }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -179,6 +220,7 @@ const Layout = () => {
                             sx={{
                                 color: "#fcffff",
                                 display: { xs: "none", sm: "block" },
+                                fontWeight: "bold",
                             }}
                         >
                             VidTube
@@ -190,25 +232,82 @@ const Layout = () => {
                             {user ? (
                                 <>
                                     <Button
-                                        color="inherit"
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
+                                        onClick={() =>
+                                            navigate("/subscriptions")
+                                        }
+                                    >
+                                        Subscriptions
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
+                                        onClick={() => navigate("/videos")}
+                                    >
+                                        Your Videos
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
+                                        onClick={() => navigate("/upload")}
+                                    >
+                                        Upload Video
+                                    </Button>
+                                    <Button
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
                                         onClick={() => navigate("/dashboard")}
-                                        sx={{ color: "#fcffff", mx: 1 }}
                                     >
                                         Dashboard
                                     </Button>
                                     <Button
-                                        color="inherit"
-                                        onClick={() =>
-                                            navigate(`/c/${user.username}`)
-                                        }
-                                        sx={{ color: "#fcffff", mx: 1 }}
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
+                                        onClick={() => navigate("/profile")}
                                     >
                                         Profile
                                     </Button>
                                     <Button
-                                        color="inherit"
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
                                         onClick={handleLogout}
-                                        sx={{ color: "#fcffff", mx: 1 }}
                                     >
                                         Logout
                                     </Button>
@@ -216,16 +315,28 @@ const Layout = () => {
                             ) : (
                                 <>
                                     <Button
-                                        color="inherit"
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
                                         onClick={() => navigate("/login")}
-                                        sx={{ color: "#fcffff", mx: 1 }}
                                     >
                                         Login
                                     </Button>
                                     <Button
-                                        color="inherit"
+                                        sx={{
+                                            color: "#fcffff",
+                                            mx: 1,
+                                            "&:hover": {
+                                                background:
+                                                    "rgba(255, 255, 255, 0.1)",
+                                            },
+                                        }}
                                         onClick={() => navigate("/register")}
-                                        sx={{ color: "#fcffff", mx: 1 }}
                                     >
                                         Register
                                     </Button>
@@ -236,22 +347,22 @@ const Layout = () => {
                 </Toolbar>
             </AppBar>
 
-            {/* Mobile Drawer */}
             <Drawer
                 anchor="left"
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
                 sx={{
                     "& .MuiDrawer-paper": {
-                        backgroundColor: "var(--background-color)",
+                        background:
+                            "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                        boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
                     },
                 }}
             >
                 {drawerContent}
             </Drawer>
 
-            {/* Main Content */}
-            <Box
+            <Container
                 component="main"
                 sx={{
                     mt: { xs: 2, sm: 3, md: 4 },
@@ -263,18 +374,19 @@ const Layout = () => {
                 }}
             >
                 <Outlet />
-            </Box>
+            </Container>
 
-            {/* Footer */}
             <Box
                 component="footer"
                 sx={{
                     py: 3,
                     px: { xs: 2, sm: 3 },
                     mt: "auto",
-                    backgroundColor: "var(--primary-color)",
+                    background:
+                        "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
                     color: "#fcffff",
                     textAlign: "center",
+                    borderTop: "1px solid rgba(255, 255, 255, 0.1)",
                 }}
             >
                 <Typography variant="body2">
