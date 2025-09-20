@@ -6,7 +6,10 @@ const app = express();
 
 app.use(
     cors({
-        origin: process.env.CLIENT_URL,
+        origin: process.env.CLIENT_URL || [
+            "http://localhost:3000",
+            "http://localhost:5173",
+        ],
         credentials: true,
     })
 );
@@ -24,7 +27,6 @@ app.use(cookieParser());
 
 app.use(express.static("public"));
 
-
 import healthCheckRoutes from "./routes/healthcheck.routes.js";
 import userRouter from "./routes/users.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
@@ -36,11 +38,9 @@ import likeRouter from "./routes/like.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
 
-
-
 app.use("/api/v1/healthcheck", healthCheckRoutes);
 app.use("/api/v1/users", userRouter);
-app.use("api/v1/tweets", tweetRouter);
+app.use("/api/v1/tweets", tweetRouter);
 app.use("/api/v1/subscriptions", subscriptionRouter);
 app.use("/api/v1/videos", videoRouter);
 app.use("/api/v1/comments", commentRouter);
