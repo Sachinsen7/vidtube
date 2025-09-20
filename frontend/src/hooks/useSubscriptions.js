@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import useSubscriptionStore from "../stores/subscriptionStore";
 
 export const useSubscriptions = (channelId) => {
