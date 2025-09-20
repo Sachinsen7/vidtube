@@ -8,7 +8,7 @@ export const useVideos = (params = {}) => {
         isLoading,
         error,
         fetchVideos,
-        fetchVideoById,
+        getVideoById,
         publishVideo,
         updateVideo,
         deleteVideo,
@@ -21,7 +21,7 @@ export const useVideos = (params = {}) => {
         const loadVideos = async () => {
             try {
                 const response = await fetchVideos({
-                    page,
+                    pages,
                     limit: 10,
                     ...params,
                 });
@@ -35,9 +35,9 @@ export const useVideos = (params = {}) => {
 
     const handleFetchVideoById = useCallback(
         async (videoId) => {
-            await fetchVideoById(videoId);
+            await getVideoById(videoId);
         },
-        [fetchVideoById]
+        [getVideoById]
     );
 
     const handlePublishVideo = useCallback(
