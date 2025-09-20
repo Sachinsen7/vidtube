@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Box, TextField, CircularProgress } from "@mui/material";
+import { Grid, Box, Alert, TextField, CircularProgress } from "@mui/material";
 import { useSearch } from "../../hooks/useSearch";
 import VideoCard from "../video/VideoCard";
 
@@ -15,10 +15,9 @@ const SearchBar = () => {
     return (
         <Box
             sx={{
-                maxWidth: 600,
-                mx: "auto",
+                width: "100%",
+                maxWidth: "100%",
                 p: 2,
-                backgroundColor: "var(--background-color)",
             }}
         >
             <TextField
