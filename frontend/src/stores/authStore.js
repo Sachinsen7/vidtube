@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import axios from "axios";
 import {
     login,
     register,
@@ -23,29 +22,36 @@ const useAuthStore = create(
             login: async (credentials) => {
                 set({ isLoading: true, error: null });
                 try {
-                    const response = await axios.post(
-                        "/api/v1/users/login",
-                        credentials
-                    );
-                    const { user, accessToken, refreshToken, isLoading } =
-                        response.data.data;
-                    set({ user, accessToken, refreshToken, isLoading: false });
-                    axios.defaults.headers.common["Authorization"] =
-                        `Bearer ${accessToken}`;
+                    const { existedUser, accessToken, refreshToken } =
+                        await login(credentials);
+                    set({
+                        user: existedUser,
+                        accessToken,
+                        refreshToken,
+                        isLoading: false,
+                    });
+                    return existedUser;
                 } catch (error) {
                     set({
                         error: error.response?.data?.message || "Login failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
 
             register: async (formData) => {
                 set({ isLoading: true, error: null });
                 try {
-                    const response = await register(formData);
-                    const { user, accessToken, refreshToken } = response;
-                    set({ user, accessToken, refreshToken, isLoading: false });
+                    const { existedUser, accessToken, refreshToken } =
+                        await register(formData);
+                    set({
+                        user: existedUser,
+                        accessToken,
+                        refreshToken,
+                        isLoading: false,
+                    });
+                    return existedUser;
                 } catch (error) {
                     set({
                         error:
@@ -53,38 +59,36 @@ const useAuthStore = create(
                             "Registration failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
 
             logout: async () => {
-                set({ isLoading: true });
+                set({ isLoading: true, error: null });
                 try {
-                    await axios.post("/api/v1/users/logout");
+                    await logout();
                     set({
                         user: null,
                         accessToken: null,
                         refreshToken: null,
                         isLoading: false,
                     });
-                    delete axios.defaults.headers.common["Authorization"];
                 } catch (error) {
                     set({
-                        error: error.message?.data?.message || "Logout failed",
+                        error: error.response?.data?.message || "Logout failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
 
             refreshAccessToken: async () => {
-                set({ isLoading: true });
+                set({ isLoading: true, error: null });
                 try {
-                    const response = await axios.post(
-                        "/api/v1/users/refresh-token"
-                    );
-                    const { accessToken, refreshToken } = response.data.data;
+                    const { accessToken, refreshToken } =
+                        await refreshAccessToken();
                     set({ accessToken, refreshToken, isLoading: false });
-                    axios.defaults.headers.common["Authorization"] =
-                        `Bearer ${accessToken}`;
+                    return { accessToken, refreshToken };
                 } catch (error) {
                     set({
                         error:
@@ -92,6 +96,7 @@ const useAuthStore = create(
                             "Token refresh failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
 
@@ -100,11 +105,13 @@ const useAuthStore = create(
                 try {
                     const user = await updateAccountDetails(details);
                     set({ user, isLoading: false });
+                    return user;
                 } catch (error) {
                     set({
                         error: error.response?.data?.message || "Update failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
 
@@ -113,6 +120,7 @@ const useAuthStore = create(
                 try {
                     const user = await updateAvatar(file);
                     set({ user, isLoading: false });
+                    return user;
                 } catch (error) {
                     set({
                         error:
@@ -120,6 +128,7 @@ const useAuthStore = create(
                             "Avatar update failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
 
@@ -128,6 +137,7 @@ const useAuthStore = create(
                 try {
                     const user = await updateCoverImage(file);
                     set({ user, isLoading: false });
+                    return user;
                 } catch (error) {
                     set({
                         error:
@@ -135,6 +145,7 @@ const useAuthStore = create(
                             "Cover image update failed",
                         isLoading: false,
                     });
+                    throw error;
                 }
             },
         }),
