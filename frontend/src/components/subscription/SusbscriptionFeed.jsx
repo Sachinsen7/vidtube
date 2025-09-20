@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography, Grid, CircularProgress, Alert } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
-import { useVideos } from "../../hooks/useVideos";
+import { useVideos } from "../../hooks/useVideo";
 import VideoCard from "../video/VideoCard";
 
 const SubscriptionFeed = ({ channelId }) => {
