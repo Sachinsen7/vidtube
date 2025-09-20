@@ -27,7 +27,8 @@ const VideoCard = ({ video }) => {
             component={motion.div}
             whileHover={{ scale: 1.02 }}
             sx={{
-                maxWidth: 345,
+                width: "100%",
+                maxWidth: "100%",
                 boxShadow: 3,
                 backgroundColor: "var(--background-color)",
             }}
