@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useTweetStore } from "../stores/tweetStore";
+import useTweetStore from "../stores/tweetStore";
 
 export const useTweets = (userId) => {
     const {
@@ -10,6 +10,8 @@ export const useTweets = (userId) => {
         createTweet,
         updateTweet,
         deleteTweet,
+        retweetTweet,
+        bookmarkTweet,
     } = useTweetStore();
     const [page, setPage] = useState(1);
 
@@ -20,8 +22,8 @@ export const useTweets = (userId) => {
     }, [fetchTweets, userId, page]);
 
     const handleCreateTweet = useCallback(
-        async (content) => {
-            await createTweet(content);
+        async (formData) => {
+            await createTweet(formData);
         },
         [createTweet]
     );
@@ -40,6 +42,20 @@ export const useTweets = (userId) => {
         [deleteTweet]
     );
 
+    const handleRetweetTweet = useCallback(
+        async (tweetId) => {
+            await retweetTweet(tweetId);
+        },
+        [retweetTweet]
+    );
+
+    const handleBookmarkTweet = useCallback(
+        async (tweetId) => {
+            await bookmarkTweet(tweetId);
+        },
+        [bookmarkTweet]
+    );
+
     return {
         tweets,
         isLoading,
@@ -49,5 +65,8 @@ export const useTweets = (userId) => {
         createTweet: handleCreateTweet,
         updateTweet: handleUpdateTweet,
         deleteTweet: handleDeleteTweet,
+        retweetTweet: handleRetweetTweet,
+        bookmarkTweet: handleBookmarkTweet,
+        hasMore: tweets.length % 10 === 0,
     };
 };
