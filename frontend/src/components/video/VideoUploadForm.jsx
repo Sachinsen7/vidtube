@@ -42,10 +42,10 @@ const VideoUploadForm = () => {
             component="form"
             onSubmit={handleSubmit}
             sx={{
-                maxWidth: 600,
+                maxWidth: { xs: "100%", sm: 600 },
+                width: "100%",
                 mx: "auto",
                 p: 2,
-                backgroundColor: "var(--background-color)",
             }}
         >
             <Typography
