@@ -35,11 +35,8 @@ const Playlist = () => {
     return (
         <Box
             sx={{
-                backgroundColor: "var(--background-color)",
-                minHeight: "100vh",
-                p: 2,
-                maxWidth: 1200,
-                mx: "auto",
+                width: "100%",
+                maxWidth: "100%",
             }}
         >
             <Typography
