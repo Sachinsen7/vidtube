@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -7,6 +7,7 @@ import {
     CardContent,
     Typography,
     Button,
+    Box,
 } from "@mui/material";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
 import Avatar from "../common/Avatar";
