@@ -13,14 +13,14 @@ const Video = () => {
         selectedVideo,
         isLoading: videoLoading,
         error: videoError,
-        fetchVideoById,
+        fetchVideos,
     } = useVideos();
     const { isLoading: commentsLoading, error: commentsError } =
         useComments(videoId);
 
     useEffect(() => {
-        fetchVideoById(videoId);
-    }, [fetchVideoById, videoId]);
+        fetchVideos(videoId);
+    }, [fetchVideos, videoId]);
 
     if (videoLoading || commentsLoading)
         return (
@@ -32,11 +32,8 @@ const Video = () => {
     return (
         <Box
             sx={{
-                backgroundColor: "var(--background-color)",
-                minHeight: "100vh",
-                p: 2,
-                maxWidth: 1200,
-                mx: "auto",
+                width: "100%",
+                maxWidth: "100%",
             }}
         >
             <Typography
