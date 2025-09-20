@@ -23,13 +23,31 @@ const getTheme = (mode) =>
             },
         },
         typography: {
-            fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+            fontFamily:
+                '"Bebas Neue", "Roboto", "Helvetica", "Arial", sans-serif',
         },
         components: {
             MuiButton: {
                 styleOverrides: {
                     root: {
                         textTransform: "none",
+                    },
+                },
+            },
+            MuiContainer: {
+                styleOverrides: {
+                    root: {
+                        width: "100%",
+                        maxWidth: "100% !important",
+                        paddingLeft: "0 !important",
+                        paddingRight: "0 !important",
+                    },
+                },
+            },
+            MuiBox: {
+                styleOverrides: {
+                    root: {
+                        boxSizing: "border-box",
                     },
                 },
             },
