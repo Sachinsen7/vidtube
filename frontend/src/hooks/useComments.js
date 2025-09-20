@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import useCommentStore from "../stores/commentStore";
 
-export const useComments = () => {
+export const useComments = (videoId) => {
     const {
         comments,
         isLoading,
