@@ -16,7 +16,7 @@ const VideoList = () => {
     if (error) return <Alert severity="error">{error}</Alert>;
 
     return (
-        <Box sx={{ p: 2, backgroundColor: "var(--background-color)" }}>
+        <Box sx={{ width: "100%", maxWidth: "100%" }}>
             <Typography
                 variant="h6"
                 gutterBottom
