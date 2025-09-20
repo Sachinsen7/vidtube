@@ -6,7 +6,7 @@ const VideoPlayer = ({ video }) => {
     if (!video) return <Typography>No video selected</Typography>;
 
     return (
-        <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>
+        <Box sx={{ width: "100%", maxWidth: "100%" }}>
             <ReactPlayer
                 url={video.videoFile}
                 width="100%"
