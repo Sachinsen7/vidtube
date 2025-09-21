@@ -10,15 +10,13 @@ import {
 } from "@mui/material";
 import { Favorite, Comment } from "@mui/icons-material";
 import ReactPlayer from "react-player";
-import { useVideos } from "../../hooks/useVideo";
 import { formatDate } from "../../utils/formatDate";
 
 const VideoCard = ({ video }) => {
     const navigate = useNavigate();
-    const { fetchVideos } = useVideos();
 
     const handleClick = () => {
-        fetchVideos(video._id);
+        // Navigate to the video detail page; data will be fetched on that page
         navigate(`/videos/${video._id}`);
     };
 
