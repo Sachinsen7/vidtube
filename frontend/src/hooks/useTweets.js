@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import useTweetStore from "../stores/tweetStore";
+import { getUserTweets } from "../services/tweet";
 
 export const useTweets = (userId) => {
     const {
@@ -15,11 +16,20 @@ export const useTweets = (userId) => {
     } = useTweetStore();
     const [page, setPage] = useState(1);
 
-    useEffect(() => {
+    // Manual load function
+    const loadTweets = useCallback(async () => {
         if (userId) {
-            fetchTweets(userId, { page, limit: 10 });
+            try {
+                await getUserTweets(userId, { page, limit: 10 });
+            } catch (err) {
+                console.error("Failed to load tweets:", err);
+            }
         }
-    }, [fetchTweets, userId, page]);
+    }, [userId, page]);
+
+    useEffect(() => {
+        loadTweets();
+    }, [userId]); // Only depend on userId, not page or loadTweets
 
     const handleCreateTweet = useCallback(
         async (formData) => {
@@ -62,6 +72,7 @@ export const useTweets = (userId) => {
         error,
         page,
         setPage,
+        loadTweets,
         createTweet: handleCreateTweet,
         updateTweet: handleUpdateTweet,
         deleteTweet: handleDeleteTweet,
