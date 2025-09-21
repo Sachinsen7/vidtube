@@ -23,7 +23,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
     const existingLike = await likeModel.findOne({
         video: videoId,
-        likedBy: userId,
+        likedby: userId,
     });
 
     if (existingLike) {
@@ -35,7 +35,7 @@ const toggleVideoLike = asyncHandler(async (req, res) => {
 
     await likeModel.create({
         video: videoId,
-        likedBy: userId,
+        likedby: userId,
     });
     return res
         .status(200)
@@ -53,7 +53,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
     const comment = await commentModel.findById(commentId);
     if (!comment) throw new ApiError(404, "Comment not found");
 
-    const existingLike = await Like.findOne({
+    const existingLike = await likeModel.findOne({
         comment: commentId,
         likedby: userId,
     });
@@ -65,7 +65,7 @@ const toggleCommentLike = asyncHandler(async (req, res) => {
             .json(new ApiResponse(200, {}, "Like removed from comment"));
     }
 
-    await Like.create({ comment: commentId, likedby: userId });
+    await likeModel.create({ comment: commentId, likedby: userId });
     return res
         .status(201)
         .json(new ApiResponse(201, {}, "Like added to comment"));
@@ -82,7 +82,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
     const tweet = await TweetModel.findById(tweetId);
     if (!tweet) throw new ApiError(404, "Tweet not found");
 
-    const existingLike = await Like.findOne({
+    const existingLike = await likeModel.findOne({
         tweet: tweetId,
         likedby: userId,
     });
@@ -94,7 +94,7 @@ const toggleTweetLike = asyncHandler(async (req, res) => {
             .json(new ApiResponse(200, {}, "Like removed from tweet"));
     }
 
-    await Like.create({ tweet: tweetId, likedby: userId });
+    await likeModel.create({ tweet: tweetId, likedby: userId });
     return res
         .status(201)
         .json(new ApiResponse(201, {}, "Like added to tweet"));
