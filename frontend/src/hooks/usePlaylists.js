@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import usePlaylistStore from "../stores/playlistStore";
 
-export const usePlaylists = () => {
+export const usePlaylists = (userId) => {
     const {
         playlists,
         selectedPlaylist,
@@ -20,7 +20,7 @@ export const usePlaylists = () => {
         if (userId) {
             fetchPlaylists(userId);
         }
-    }, [fetchPlaylists, userId]);
+    }, [userId]); // Remove fetchPlaylists from dependencies to prevent infinite loops
 
     const handleFetchPlaylistById = useCallback(
         async (playlistId) => {
