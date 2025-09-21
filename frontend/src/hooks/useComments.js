@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import useCommentStore from "../stores/commentStore";
+import { getComments } from "../services/comment";
 
 export const useComments = (videoId) => {
     const {
@@ -14,22 +15,24 @@ export const useComments = (videoId) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-    useEffect(() => {
+    // Manual load function
+    const loadComments = useCallback(async () => {
         if (videoId) {
-            const loadComments = async () => {
-                try {
-                    const response = await fetchComments(videoId, {
-                        page,
-                        limit: 10,
-                    });
-                    if (response.length < 10) setHasMore(false);
-                } catch (err) {
-                    setHasMore(false);
-                }
-            };
-            loadComments();
+            try {
+                const response = await getComments(videoId, {
+                    page,
+                    limit: 10,
+                });
+                if (response && response.length < 10) setHasMore(false);
+            } catch (err) {
+                setHasMore(false);
+            }
         }
-    }, [fetchComments, videoId, page]);
+    }, [videoId, page]);
+
+    useEffect(() => {
+        loadComments();
+    }, [videoId]); // Only depend on videoId, not page or loadComments
 
     const handleAddComment = useCallback(
         async (content) => {
@@ -59,6 +62,7 @@ export const useComments = (videoId) => {
         page,
         setPage,
         hasMore,
+        loadComments, // Return the manual load function
         addComment: handleAddComment,
         updateComment: handleUpdateComment,
         deleteComment: handleDeleteComment,
