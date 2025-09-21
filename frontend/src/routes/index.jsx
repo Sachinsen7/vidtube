@@ -7,12 +7,11 @@ import Channel from "../pages/Channel";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Register from "../pages/Register";
-import Subscriptions from "../pages/Subscriptions";
 import NotFound from "../pages/NotFound";
 import Layout from "../components/common/Layout";
-import VideoListPage from "../pages/VideoListPage";
-import VideoUploadPage from "../pages/VideoUploadPage";
+import Subscriptions from "../pages/Subscriptions";
 import ProfilePage from "../pages/ProfilePage";
+import VideoListPage from "../pages/VideoListPage";
 
 const AppComponent = React.lazy(() => import("../App"));
 
@@ -35,10 +34,9 @@ const router = createBrowserRouter([
                     { path: "/dashboard", element: <Dashboard /> },
                     { path: "/login", element: <Login /> },
                     { path: "/register", element: <Register /> },
+                    { path: "/profile", element: <ProfilePage /> },
                     { path: "/subscriptions", element: <Subscriptions /> },
                     { path: "/videos", element: <VideoListPage /> },
-                    { path: "/upload", element: <VideoUploadPage /> },
-                    { path: "/profile", element: <ProfilePage /> },
                     { path: "*", element: <NotFound /> },
                 ],
             },
