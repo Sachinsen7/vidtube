@@ -17,21 +17,19 @@ export const useVideos = (params = {}) => {
     const [pages, setPages] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-    useEffect(() => {
-        const loadVideos = async () => {
-            try {
-                const response = await fetchVideos({
-                    pages,
-                    limit: 10,
-                    ...params,
-                });
-                if (response.length < 10) setHasMore(false);
-            } catch (err) {
-                setHasMore(false);
-            }
-        };
-        loadVideos();
-    }, [fetchVideos, pages, params]);
+    // Manual load function that components can call
+    const loadVideos = useCallback(async () => {
+        try {
+            const response = await fetchVideos({
+                page: pages,
+                limit: 10,
+                ...params,
+            });
+            if (response && response.length < 10) setHasMore(false);
+        } catch (err) {
+            setHasMore(false);
+        }
+    }, [pages]); // Only depend on pages, not on fetchVideos or params
 
     const handleFetchVideoById = useCallback(
         async (videoId) => {
@@ -76,7 +74,8 @@ export const useVideos = (params = {}) => {
         pages,
         setPages,
         hasMore,
-        fetchVideos: handleFetchVideoById,
+        loadVideos, // Return the manual load function
+        getVideoById: handleFetchVideoById,
         publishVideo: handlePublishVideo,
         updateVideo: handleUpdateVideo,
         deleteVideo: handleDeleteVideo,
