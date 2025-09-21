@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, Grid, CircularProgress, Alert } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useVideos } from "../../hooks/useVideo";
 import VideoCard from "../video/VideoCard";
 
 const VideoList = () => {
-    const { videos, isLoading, error, pages, setPages, hasMore } = useVideos({
-        userVideos: true,
-    });
+    const { videos, isLoading, error, pages, setPages, hasMore, loadVideos } =
+        useVideos({
+            userVideos: true,
+        });
+
+    useEffect(() => {
+        loadVideos();
+    }, []); // Only run once on mount
 
     const loadMore = () => {
         if (hasMore) setPages(pages + 1);
@@ -35,11 +40,12 @@ const VideoList = () => {
                 }
             >
                 <Grid container spacing={2}>
-                    {videos.map((video) => (
-                        <Grid item xs={12} sm={6} md={4} key={video._id}>
-                            <VideoCard video={video} />
-                        </Grid>
-                    ))}
+                    {Array.isArray(videos) &&
+                        videos.map((video) => (
+                            <Grid item xs={12} sm={6} md={4} key={video._id}>
+                                <VideoCard video={video} />
+                            </Grid>
+                        ))}
                 </Grid>
             </InfiniteScroll>
         </Box>
