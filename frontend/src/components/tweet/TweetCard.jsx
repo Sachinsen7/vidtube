@@ -70,7 +70,10 @@ const TweetCard = ({ tweet, userId }) => {
         handleMenuClose();
     };
 
-    const isOwner = user?._id.toString() === tweet.owner._id.toString();
+    // Safely determine ownership without calling toString on undefined
+    const isOwner =
+        (user?._id?.toString?.() || "") ===
+        (tweet?.owner?._id?.toString?.() || "");
 
     return (
         <Card
