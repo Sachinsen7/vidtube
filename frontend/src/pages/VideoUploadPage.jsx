@@ -14,7 +14,7 @@ import Input from "../components/common/Input";
 
 const VideoUploadPage = () => {
     const { user } = useAuth();
-    const { uploadVideo, isLoading, error } = useVideos();
+    const { publishVideo, isLoading, error } = useVideos();
     const navigate = useNavigate();
     const isMobile = useMediaQuery("(max-width:600px)");
     const [formData, setFormData] = useState({
@@ -60,7 +60,7 @@ const VideoUploadPage = () => {
             if (value) data.append(key, value);
         });
         try {
-            await uploadVideo(data);
+            await publishVideo(data);
             navigate("/dashboard");
         } catch (err) {
             // Error is handled by useVideos hook
