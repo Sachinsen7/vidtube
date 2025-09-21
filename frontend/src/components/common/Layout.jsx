@@ -212,6 +212,7 @@ const Layout = () => {
                     >
                         <img
                             src=""
+                            // +                            src={undefined}
                             alt="VidTube Logo"
                             style={{ height: 40, marginRight: 8 }}
                         />
