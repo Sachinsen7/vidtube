@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Box,
     Typography,
@@ -15,9 +15,16 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const VideoListPage = () => {
     const { user } = useAuth();
     const isMobile = useMediaQuery("(max-width:600px)");
-    const { videos, isLoading, error, page, setPage, hasMore } = useVideos({
-        userId: user?._id,
-    });
+    const { videos, isLoading, error, pages, setPages, hasMore, loadVideos } =
+        useVideos({
+            userId: user?._id,
+        });
+
+    useEffect(() => {
+        if (user?._id) {
+            loadVideos();
+        }
+    }, [user?._id]); // Only depend on user ID
 
     if (!user) {
         return (
@@ -40,7 +47,7 @@ const VideoListPage = () => {
         );
     }
 
-    if (isLoading && page === 1) {
+    if (isLoading && pages === 1) {
         return (
             <CircularProgress
                 sx={{
@@ -85,7 +92,7 @@ const VideoListPage = () => {
             </Typography>
             <InfiniteScroll
                 dataLength={videos.length}
-                next={() => setPage(page + 1)}
+                next={() => setPages(pages + 1)}
                 hasMore={hasMore}
                 loader={
                     <CircularProgress
