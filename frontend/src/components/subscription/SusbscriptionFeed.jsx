@@ -15,15 +15,15 @@ const SubscriptionFeed = ({ channelId }) => {
         videos,
         isLoading: videoLoading,
         error: videoError,
-        page,
-        setPage,
+        pages,
+        setPages,
         hasMore,
     } = useVideos({
         subscribed: true,
     });
 
     const loadMore = () => {
-        if (hasMore) setPage(page + 1);
+        if (hasMore) setPages(pages + 1);
     };
 
     if (subLoading || videoLoading)
