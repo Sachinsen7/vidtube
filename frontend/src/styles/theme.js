@@ -24,7 +24,8 @@ const getTheme = (mode) =>
         },
         typography: {
             fontFamily:
-                '"Bebas Neue", "Roboto", "Helvetica", "Arial", sans-serif',
+                // '"Bebas Neue", "Roboto", "Helvetica", "Arial", sans-serif',
+                '"Ubuntu", sans-serif',
         },
         components: {
             MuiButton: {

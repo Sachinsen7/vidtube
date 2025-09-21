@@ -8,23 +8,41 @@ import {
     togglePublishStatus,
 } from "../services/video";
 
-const useVideoStore = create((set) => ({
+const useVideoStore = create((set, get) => ({
     videos: [],
     selectedVideo: null,
     isLoading: false,
     error: null,
 
-    getAllVideos: async (params) => {
+    fetchVideos: async (params) => {
         set({ isLoading: true, error: null });
         try {
             const videos = await getAllVideos(params);
             set({ videos, isLoading: false });
+            return videos;
         } catch (error) {
             set({
                 error:
                     error.response?.data?.message || "Failed to fetch videos",
                 isLoading: false,
             });
+            throw error;
+        }
+    },
+
+    getAllVideos: async (params) => {
+        set({ isLoading: true, error: null });
+        try {
+            const videos = await getAllVideos(params);
+            set({ videos, isLoading: false });
+            return videos;
+        } catch (error) {
+            set({
+                error:
+                    error.response?.data?.message || "Failed to fetch videos",
+                isLoading: false,
+            });
+            throw error;
         }
     },
 
