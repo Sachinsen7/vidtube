@@ -1,11 +1,19 @@
 import api from "./api";
 
-export const getAllVideos = async () => {
+export const getAllVideos = async (params = {}) => {
     const response = await api.get("/api/v1/videos", { params });
-    return response.data.data;
+    const data = response.data.data;
+
+    if (Array.isArray(data)) {
+        return data;
+    } else if (Array.isArray(data?.videos)) {
+        return data.videos;
+    } else {
+        return [];
+    }
 };
 
-export const getVideoById = async (id) => {
+export const getVideoById = async (videoId) => {
     const response = await api.get(`/api/v1/videos/${videoId}`);
     return response.data.data;
 };
