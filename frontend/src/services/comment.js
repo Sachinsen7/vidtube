@@ -1,15 +1,16 @@
 import api from "./api";
 
-export const getComments = async (videoId) => {
-    const response = await api.get(`/api/v1/videos/${videoId}/comments`);
+export const getComments = async (videoId, params = {}) => {
+    const response = await api.get(`/api/v1/videos/${videoId}/comments`, {
+        params,
+    });
     return response.data.data;
 };
 
-export const addComments = async (videoId, comment) => {
-    const response = await api.post(
-        `/api/v1/videos/${videoId}/comments`,
-        comment
-    );
+export const addComments = async (videoId, content) => {
+    const response = await api.post(`/api/v1/videos/${videoId}/comments`, {
+        content,
+    });
     return response.data.data;
 };
 
