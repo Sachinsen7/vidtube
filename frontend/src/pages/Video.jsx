@@ -13,14 +13,16 @@ const Video = () => {
         selectedVideo,
         isLoading: videoLoading,
         error: videoError,
-        fetchVideos,
+        getVideoById,
     } = useVideos();
     const { isLoading: commentsLoading, error: commentsError } =
         useComments(videoId);
 
     useEffect(() => {
-        fetchVideos(videoId);
-    }, [fetchVideos, videoId]);
+        if (videoId) {
+            getVideoById(videoId);
+        }
+    }, [videoId]); // Remove getVideoById from dependencies to prevent infinite loops
 
     if (videoLoading || commentsLoading)
         return (
