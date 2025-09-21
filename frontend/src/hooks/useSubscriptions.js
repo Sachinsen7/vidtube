@@ -16,7 +16,7 @@ export const useSubscriptions = (channelId) => {
         if (channelId) {
             fetchSubscribedChannels(channelId);
         }
-    }, [fetchSubscribedChannels, channelId]);
+    }, [channelId]); // Remove fetchSubscribedChannels from dependencies to prevent infinite loops
 
     const handleToggleSubscription = useCallback(
         async (channelId) => {
