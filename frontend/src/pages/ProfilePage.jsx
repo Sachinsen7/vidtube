@@ -14,6 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import TweetList from "../components/tweet/TweetList";
+import TweetForm from "../components/tweet/TweetForm";
 import VideoList from "../components/dashboard/VideoList";
 
 const ProfilePage = () => {
@@ -85,7 +86,7 @@ const ProfilePage = () => {
                 setCoverFile(null);
             }
         } catch (err) {
-            // Error handled by useAuth
+            console.log(err);
         }
     };
 
@@ -331,7 +332,12 @@ const ProfilePage = () => {
                     <Tab label="Tweets" />
                     <Tab label="Videos" />
                 </Tabs>
-                {tabValue === 0 && <TweetList userId={user._id} />}
+                {tabValue === 0 && (
+                    <>
+                        <TweetForm userId={user._id} />
+                        <TweetList userId={user._id} />
+                    </>
+                )}
                 {tabValue === 1 && <VideoList />}
             </Box>
         </Box>
