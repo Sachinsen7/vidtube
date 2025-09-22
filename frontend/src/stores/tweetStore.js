@@ -20,15 +20,33 @@ const useTweetStore = create(
             fetchTweets: async (userId, { page, limit }) => {
                 set({ isLoading: true, error: null });
                 try {
-                    const tweets = await getUserTweets(userId, { page, limit });
+                    const data = await getUserTweets(userId, { page, limit });
+                    const items = Array.isArray(data) ? data : data.tweets;
+                    const total = Array.isArray(data) ? undefined : data.total;
+                    const effectivePage = Array.isArray(data)
+                        ? page
+                        : data.page;
+                    const effectiveLimit = Array.isArray(data)
+                        ? limit
+                        : data.limit;
                     set((state) => ({
                         tweets:
-                            page === 1 ? tweets : [...state.tweets, ...tweets],
+                            effectivePage === 1
+                                ? items
+                                : [...state.tweets, ...items],
                         isLoading: false,
-                        hasMore: tweets.length === limit,
+                        hasMore:
+                            total != null
+                                ? effectivePage * effectiveLimit < total
+                                : items.length === effectiveLimit,
+                        page: effectivePage,
                     }));
                 } catch (error) {
-                    set({ error: error.message, isLoading: false });
+                    set({
+                        error: error.message,
+                        isLoading: false,
+                        hasMore: false,
+                    });
                 }
             },
             createTweet: async (formData) => {
