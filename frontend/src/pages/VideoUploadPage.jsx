@@ -63,7 +63,7 @@ const VideoUploadPage = () => {
             await publishVideo(data);
             navigate("/dashboard");
         } catch (err) {
-            // Error is handled by useVideos hook
+            console.log(err);
         }
     };
 
