@@ -36,7 +36,7 @@ router.post(
 router.post("/refresh-token", refreshAccessToken);
 
 // secured route
-router.post("/logout", verifyJWT, logoutUser);
+router.post("/logout", logoutUser);
 router.post("/change-password", verifyJWT, changeCurrentPassword);
 router.get("/current-user", verifyJWT, getCurrentUser);
 router.get("/c/:username", verifyJWT, getUserChannelProfile);
