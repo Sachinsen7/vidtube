@@ -10,18 +10,37 @@ const useCommentStore = create((set) => ({
     comments: [],
     isLoading: false,
     error: null,
+    hasMore: true,
+    page: 1,
 
-    fetchComments: async (videoId, params) => {
+    fetchComments: async (videoId, params = {}) => {
         set({ isLoading: true, error: null });
         try {
-            const comments = await getComments(videoId, params);
-            set({ comments, isLoading: false });
+            const { page = 1, limit = 10 } = params;
+            const response = await getComments(videoId, { page, limit });
+            const comments = Array.isArray(response?.comments)
+                ? response.comments
+                : Array.isArray(response)
+                  ? response
+                  : [];
+
+            set((state) => ({
+                comments:
+                    page === 1 ? comments : [...state.comments, ...comments],
+                isLoading: false,
+                hasMore: Array.isArray(comments)
+                    ? comments.length === limit
+                    : false,
+                page,
+            }));
+
             return comments;
         } catch (error) {
             set({
                 error:
                     error.response?.data?.message || "Failed to fetch comments",
                 isLoading: false,
+                hasMore: false,
             });
             throw error;
         }
