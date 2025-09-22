@@ -4,6 +4,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import VideoModel from "../models/video.model.js";
+import LikeModel from "../models/like.model.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
@@ -140,7 +141,7 @@ const updateComment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid comment ID");
     }
 
-    const comment = await Comment.findById(commentId);
+    const comment = await commentModel.findById(commentId);
 
     if (!comment) {
         throw new ApiError(404, "Comment not found");
@@ -172,7 +173,7 @@ const updateComment = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(
-            new ApiResponse(200, updatedComment, "Comment updated successfully")
+            new ApiResponse(200, updateComment, "Comment updated successfully")
         );
 });
 
@@ -183,7 +184,7 @@ const deleteComment = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Invalid comment ID");
     }
 
-    const comment = await Comment.findById(commentId);
+    const comment = await commentModel.findById(commentId);
 
     if (!comment) {
         throw new ApiError(404, "Comment not found");
@@ -196,9 +197,9 @@ const deleteComment = asyncHandler(async (req, res) => {
         );
     }
 
-    await Comment.findByIdAndDelete(commentId);
+    await commentModel.findByIdAndDelete(commentId);
 
-    await Like.deleteMany({ comment: commentId });
+    await LikeModel.deleteMany({ comment: commentId });
 
     return res
         .status(200)
