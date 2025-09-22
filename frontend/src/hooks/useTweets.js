@@ -16,7 +16,6 @@ export const useTweets = (userId) => {
     } = useTweetStore();
     const [page, setPage] = useState(1);
 
-    // Manual load function
     const loadTweets = useCallback(async () => {
         if (userId) {
             try {
@@ -29,7 +28,7 @@ export const useTweets = (userId) => {
 
     useEffect(() => {
         loadTweets();
-    }, [userId]); // Only depend on userId, not page or loadTweets
+    }, [userId]);
 
     const handleCreateTweet = useCallback(
         async (formData) => {
