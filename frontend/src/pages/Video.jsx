@@ -22,7 +22,7 @@ const Video = () => {
         if (videoId) {
             getVideoById(videoId);
         }
-    }, [videoId]); // Remove getVideoById from dependencies to prevent infinite loops
+    }, [videoId]);
 
     if (videoLoading || commentsLoading)
         return (
