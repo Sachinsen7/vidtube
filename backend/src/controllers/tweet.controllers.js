@@ -65,6 +65,34 @@ const retweetTweet = asyncHandler(async (req, res) => {
         );
 });
 
+const getUserTweets = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    const { page = 1, limit = 10 } = req.query;
+    if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid user ID");
+    const user = await User.findById(userId);
+    if (!user) throw new ApiError(404, "User not found");
+    const [tweets, total] = await Promise.all([
+        TweetModel.find({ owner: userId })
+            .populate("owner", "username fullName avatar")
+            .sort({ createdAt: -1 })
+            .skip((page - 1) * limit)
+            .limit(Number(limit)),
+        TweetModel.countDocuments({ owner: userId }),
+    ]);
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                tweets,
+                total,
+                page: Number(page),
+                limit: Number(limit),
+            },
+            "User tweets fetched successfully"
+        )
+    );
+});
+
 const bookmarkTweet = asyncHandler(async (req, res) => {
     const { tweetId } = req.params;
     const userId = req.user?._id;
@@ -93,23 +121,6 @@ const bookmarkTweet = asyncHandler(async (req, res) => {
                 isBookmarked ? "Tweet unbookmarked" : "Tweet bookmarked"
             )
         );
-});
-
-const getUserTweets = asyncHandler(async (req, res) => {
-    const { userId } = req.params;
-
-    if (!isValidObjectId(userId)) throw new ApiError(400, "Invalid user ID");
-
-    const user = await User.findById(userId);
-    if (!user) throw new ApiError(404, "User not found");
-
-    const tweets = await TweetModel.find({ owner: userId })
-        .populate("owner", "username fullName avatar")
-        .sort({ createdAt: -1 });
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, tweets, "User tweets fetched successfully"));
 });
 
 const updateTweet = asyncHandler(async (req, res) => {
@@ -160,9 +171,9 @@ const deleteTweet = asyncHandler(async (req, res) => {
 
 export {
     createTweet,
-    getUserTweets,
     updateTweet,
     deleteTweet,
     retweetTweet,
     bookmarkTweet,
+    getUserTweets,
 };
