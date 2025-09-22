@@ -7,7 +7,7 @@ import {
 } from "../utils/cloudinary.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import jwt from "jsonwebtoken";
-import mongoose from "mongoose";  
+import mongoose from "mongoose";
 
 const generateAccessTokenAndRefreshToken = async (userId) => {
     try {
@@ -200,15 +200,14 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-    await User.findByIdAndUpdate(
-        req.user._id,
-        {
-            $set: {
-                refreshToken: undefined,
-            },
-        },
-        { new: true }
-    );
+    const refreshToken = req.cookies?.refreshToken;
+
+    if (refreshToken) {
+        await User.updateOne(
+            { refreshToken },
+            { $unset: { refreshToken: "" } }
+        );
+    }
 
     const options = {
         httpOnly: true,
