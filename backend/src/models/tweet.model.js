@@ -33,4 +33,7 @@ const tweetSchema = new mongoose.Schema({
     },
 });
 const TweetModel = mongoose.model("Tweet", tweetSchema);
+
+tweetSchema.index({ owner: 1, createdAt: -1 });
+tweetSchema.index({ createdAt: -1 });
 export default TweetModel;
