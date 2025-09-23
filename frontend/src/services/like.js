@@ -1,17 +1,33 @@
 import api from "./api";
 
-export const toggleVideoLike = async (videoId) => {
-    const response = await api.post(`/api/v1/likes/toggle/v/${videoId}`);
+// Idempotent like/unlike endpoints
+export const likeVideo = async (videoId) => {
+    const response = await api.post(`/api/v1/likes/video/${videoId}`);
+    return response.data.data; // { liked: true, likesCount }
+};
+
+export const unlikeVideo = async (videoId) => {
+    const response = await api.delete(`/api/v1/likes/video/${videoId}`);
+    return response.data.data; // { liked: false, likesCount }
+};
+
+export const likeComment = async (commentId) => {
+    const response = await api.post(`/api/v1/likes/comment/${commentId}`);
     return response.data.data;
 };
 
-export const toggleCommentLike = async (commentId) => {
-    const response = await api.post(`/api/v1/likes/toggle/c/${commentId}`);
+export const unlikeComment = async (commentId) => {
+    const response = await api.delete(`/api/v1/likes/comment/${commentId}`);
     return response.data.data;
 };
 
-export const toggleTweetLike = async (tweetId) => {
-    const response = await api.post(`/api/v1/likes/toggle/t/${tweetId}`);
+export const likeTweet = async (tweetId) => {
+    const response = await api.post(`/api/v1/likes/tweet/${tweetId}`);
+    return response.data.data;
+};
+
+export const unlikeTweet = async (tweetId) => {
+    const response = await api.delete(`/api/v1/likes/tweet/${tweetId}`);
     return response.data.data;
 };
 
