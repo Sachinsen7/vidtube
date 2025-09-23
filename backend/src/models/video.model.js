@@ -39,6 +39,10 @@ const videoSchema = new mongoose.Schema(
 
 videoSchema.plugin(mongooseAggregatePaginate);
 
+videoSchema.index({ owner: 1, createdAt: -1 });
+videoSchema.index({ isPublished: 1, createdAt: -1 });
+videoSchema.index({ views: -1 });
+
 const VideoModel = mongoose.model("Video", videoSchema);
 
 export default VideoModel;
