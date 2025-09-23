@@ -26,11 +26,11 @@ const userSchema = new Schema(
             index: true,
         },
         avatar: {
-            type: String, //cloudinary url
+            type: String,
             required: true,
         },
         coverImage: {
-            type: String, //cloudinary url
+            type: String,
         },
         watchHistory: [
             {
@@ -53,7 +53,6 @@ const userSchema = new Schema(
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
 
-    //saving and modifying the password
     this.password = await bcrypt.hash(this.password, 10);
 
     next();
