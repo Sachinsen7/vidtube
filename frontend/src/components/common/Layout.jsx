@@ -12,9 +12,26 @@ import {
     List,
     ListItem,
     ListItemText,
+    ListItemIcon,
     useMediaQuery,
+    InputBase,
+    Avatar,
+    Menu,
+    MenuItem,
 } from "@mui/material";
-import { Menu as MenuIcon } from "@mui/icons-material";
+import {
+    Menu as MenuIcon,
+    Home as HomeIcon,
+    Subscriptions as SubscriptionsIcon,
+    VideoLibrary as VideoLibraryIcon,
+    CloudUpload as CloudUploadIcon,
+    Article as ArticleIcon,
+    Person as PersonIcon,
+    Logout as LogoutIcon,
+    Search as SearchIcon,
+    Notifications as NotificationsIcon,
+    Settings as SettingsIcon,
+} from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth";
 // import logo from "../../assets/logo.png";
 
@@ -23,6 +40,8 @@ const Layout = () => {
     const { user, logout } = useAuth();
     const [mobileOpen, setMobileOpen] = useState(false);
     const isMobile = useMediaQuery("(max-width:600px)");
+    const [profileMenuEl, setProfileMenuEl] = useState(null);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
 
     const handleLogout = async () => {
         await logout();
@@ -31,6 +50,9 @@ const Layout = () => {
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
+    };
+    const handleSidebarToggle = () => {
+        setSidebarOpen((prev) => !prev);
     };
 
     const drawerContent = (
@@ -59,10 +81,10 @@ const Layout = () => {
                         setMobileOpen(false);
                     }}
                 >
-                    <ListItemText
-                        primary="Home"
-                        sx={{ color: "var(--primary-color)" }}
-                    />
+                    <ListItemIcon>
+                        <HomeIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Home" />
                 </ListItem>
                 {user && (
                     <>
@@ -73,10 +95,10 @@ const Layout = () => {
                                 setMobileOpen(false);
                             }}
                         >
-                            <ListItemText
-                                primary="Subscriptions"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
+                            <ListItemIcon>
+                                <SubscriptionsIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Subscriptions" />
                         </ListItem>
                         <ListItem
                             button
@@ -85,10 +107,10 @@ const Layout = () => {
                                 setMobileOpen(false);
                             }}
                         >
-                            <ListItemText
-                                primary="Your Videos"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
+                            <ListItemIcon>
+                                <VideoLibraryIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Your Videos" />
                         </ListItem>
                         <ListItem
                             button
@@ -97,10 +119,10 @@ const Layout = () => {
                                 setMobileOpen(false);
                             }}
                         >
-                            <ListItemText
-                                primary="Upload Video"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
+                            <ListItemIcon>
+                                <CloudUploadIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Upload" />
                         </ListItem>
                         <ListItem
                             button
@@ -109,10 +131,10 @@ const Layout = () => {
                                 setMobileOpen(false);
                             }}
                         >
-                            <ListItemText
-                                primary="Dashboard"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
+                            <ListItemIcon>
+                                <ArticleIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Posts" />
                         </ListItem>
                         <ListItem
                             button
@@ -121,10 +143,10 @@ const Layout = () => {
                                 setMobileOpen(false);
                             }}
                         >
-                            <ListItemText
-                                primary="Profile"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
+                            <ListItemIcon>
+                                <PersonIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Profile" />
                         </ListItem>
                         <ListItem
                             button
@@ -133,10 +155,10 @@ const Layout = () => {
                                 setMobileOpen(false);
                             }}
                         >
-                            <ListItemText
-                                primary="Logout"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
+                            <ListItemIcon>
+                                <LogoutIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Logout" />
                         </ListItem>
                     </>
                 )}
@@ -192,15 +214,15 @@ const Layout = () => {
                 }}
             >
                 <Toolbar sx={{ flexWrap: "wrap" }}>
-                    {isMobile && (
-                        <IconButton
-                            edge="start"
-                            sx={{ color: "#fcffff", mr: 2 }}
-                            onClick={handleDrawerToggle}
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    )}
+                    <IconButton
+                        edge="start"
+                        sx={{ color: "#fcffff", mr: 2 }}
+                        onClick={
+                            isMobile ? handleDrawerToggle : handleSidebarToggle
+                        }
+                    >
+                        <MenuIcon />
+                    </IconButton>
                     <Box
                         component={Link}
                         to="/"
@@ -230,113 +252,99 @@ const Layout = () => {
                     <Box sx={{ flexGrow: 1 }} />
                     {!isMobile && (
                         <>
+                            <Box
+                                sx={{
+                                    background: "rgba(255,255,255,0.15)",
+                                    borderRadius: 2,
+                                    px: 2,
+                                    py: 0.5,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    mr: 2,
+                                    minWidth: 280,
+                                }}
+                            >
+                                <SearchIcon sx={{ color: "#fff", mr: 1 }} />
+                                <InputBase
+                                    placeholder="Search"
+                                    sx={{ color: "#fff", width: "100%" }}
+                                />
+                            </Box>
+                            <IconButton sx={{ color: "#fff", mr: 1 }}>
+                                <NotificationsIcon />
+                            </IconButton>
                             {user ? (
                                 <>
                                     <Button
+                                        onClick={(e) =>
+                                            setProfileMenuEl(e.currentTarget)
+                                        }
                                         sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
+                                            color: "#fff",
+                                            textTransform: "none",
                                         }}
-                                        onClick={() =>
-                                            navigate("/subscriptions")
+                                        startIcon={
+                                            <Avatar
+                                                src={user.avatar}
+                                                sx={{ width: 24, height: 24 }}
+                                            />
                                         }
                                     >
-                                        Subscriptions
+                                        {user.fullName || user.username}
                                     </Button>
-                                    <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
-                                        onClick={() => navigate("/videos")}
+                                    <Menu
+                                        anchorEl={profileMenuEl}
+                                        open={Boolean(profileMenuEl)}
+                                        onClose={() => setProfileMenuEl(null)}
                                     >
-                                        Your Videos
-                                    </Button>
-                                    <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
-                                        onClick={() => navigate("/upload")}
-                                    >
-                                        Upload Video
-                                    </Button>
-                                    <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
-                                        onClick={() => navigate("/dashboard")}
-                                    >
-                                        Dashboard
-                                    </Button>
-                                    <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
-                                        onClick={() => navigate("/profile")}
-                                    >
-                                        Profile
-                                    </Button>
-                                    <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
-                                        onClick={handleLogout}
-                                    >
-                                        Logout
-                                    </Button>
+                                        <MenuItem
+                                            onClick={() => {
+                                                setProfileMenuEl(null);
+                                                navigate("/profile");
+                                            }}
+                                        >
+                                            <PersonIcon
+                                                fontSize="small"
+                                                style={{ marginRight: 8 }}
+                                            />{" "}
+                                            Profile
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={() => {
+                                                setProfileMenuEl(null);
+                                                navigate("/settings");
+                                            }}
+                                        >
+                                            <SettingsIcon
+                                                fontSize="small"
+                                                style={{ marginRight: 8 }}
+                                            />{" "}
+                                            Settings
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={() => {
+                                                setProfileMenuEl(null);
+                                                handleLogout();
+                                            }}
+                                        >
+                                            <LogoutIcon
+                                                fontSize="small"
+                                                style={{ marginRight: 8 }}
+                                            />{" "}
+                                            Logout
+                                        </MenuItem>
+                                    </Menu>
                                 </>
                             ) : (
                                 <>
                                     <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
+                                        sx={{ color: "#fff" }}
                                         onClick={() => navigate("/login")}
                                     >
                                         Login
                                     </Button>
                                     <Button
-                                        sx={{
-                                            color: "#fcffff",
-                                            mx: 1,
-                                            "&:hover": {
-                                                background:
-                                                    "rgba(255, 255, 255, 0.1)",
-                                            },
-                                        }}
+                                        sx={{ color: "#fff" }}
                                         onClick={() => navigate("/register")}
                                     >
                                         Register
@@ -348,20 +356,39 @@ const Layout = () => {
                 </Toolbar>
             </AppBar>
 
-            <Drawer
-                anchor="left"
-                open={mobileOpen}
-                onClose={handleDrawerToggle}
-                sx={{
-                    "& .MuiDrawer-paper": {
-                        background:
-                            "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
-                        boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
-                    },
-                }}
-            >
-                {drawerContent}
-            </Drawer>
+            {isMobile ? (
+                <Drawer
+                    anchor="left"
+                    open={mobileOpen}
+                    onClose={handleDrawerToggle}
+                    sx={{
+                        "& .MuiDrawer-paper": {
+                            background:
+                                "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                            boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
+                        },
+                    }}
+                >
+                    {drawerContent}
+                </Drawer>
+            ) : (
+                <Drawer
+                    variant="persistent"
+                    open={sidebarOpen}
+                    sx={{
+                        width: 250,
+                        flexShrink: 0,
+                        [`& .MuiDrawer-paper`]: {
+                            width: 250,
+                            boxSizing: "border-box",
+                            background:
+                                "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                        },
+                    }}
+                >
+                    {drawerContent}
+                </Drawer>
+            )}
 
             <Container
                 component="main"
@@ -372,6 +399,7 @@ const Layout = () => {
                     width: "100%",
                     maxWidth: "100%",
                     px: { xs: 2, sm: 3, md: 4 },
+                    ml: { sm: 0, md: sidebarOpen ? 32 : 0 },
                 }}
             >
                 <Outlet />
