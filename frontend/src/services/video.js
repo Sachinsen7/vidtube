@@ -18,6 +18,16 @@ export const getVideoById = async (videoId) => {
     return response.data.data;
 };
 
+export const getTrendingVideos = async (params = {}) => {
+    const response = await api.get(`/api/v1/trending/videos`, { params });
+    return response.data.data;
+};
+
+export const getSubscriptionFeed = async (params = {}) => {
+    const response = await api.get(`/api/v1/feed/subscriptions`, { params });
+    return response.data.data;
+};
+
 export const publishVideo = async (formData) => {
     const response = await api.post("/api/v1/videos", formData, {
         headers: { "Content-Type": "multipart/form-data" },
