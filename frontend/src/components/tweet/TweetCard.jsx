@@ -14,7 +14,9 @@ import {
     Share as ShareIcon,
     Repeat as RetweetIcon,
     Bookmark as BookmarkIcon,
+    Favorite as FavoriteIcon,
 } from "@mui/icons-material";
+import useLikeStore from "../../stores/likeStore";
 import { useTweets } from "../../hooks/useTweets";
 import { useAuth } from "../../hooks/useAuth";
 import { formatDate } from "../../utils/formatDate";
@@ -24,6 +26,7 @@ const TweetCard = ({ tweet, userId }) => {
     const { retweetTweet, bookmarkTweet, updateTweet, deleteTweet } =
         useTweets(userId);
     const { user } = useAuth();
+    const { toggleTweetLike } = useLikeStore();
     const isMobile = useMediaQuery("(max-width:600px)");
 
     if (!tweet || !tweet.owner) {
@@ -70,7 +73,6 @@ const TweetCard = ({ tweet, userId }) => {
         handleMenuClose();
     };
 
-    // Safely determine ownership without calling toString on undefined
     const isOwner =
         (user?._id?.toString?.() || "") ===
         (tweet?.owner?._id?.toString?.() || "");
@@ -139,6 +141,31 @@ const TweetCard = ({ tweet, userId }) => {
                             {tweet.retweets.length} Retweets •{" "}
                             {tweet.bookmarks.length} Bookmarks
                         </Typography>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                mt: 1,
+                            }}
+                        >
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleTweetLike(
+                                        tweet._id,
+                                        Boolean(tweet.isLiked)
+                                    );
+                                }}
+                                sx={{
+                                    color: tweet.isLiked
+                                        ? "#e91e63"
+                                        : "var(--primary-color)",
+                                }}
+                            >
+                                <FavoriteIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
                     </Box>
                     <IconButton
                         onClick={handleMenuOpen}
