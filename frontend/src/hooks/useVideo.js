@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import useVideoStore from "../stores/videoStore";
+import { getTrendingVideos, getSubscriptionFeed } from "../services/video";
 
 export const useVideos = (params = {}) => {
     const {
@@ -17,7 +18,6 @@ export const useVideos = (params = {}) => {
     const [pages, setPages] = useState(1);
     const [hasMore, setHasMore] = useState(true);
 
-    // Manual load function that components can call
     const loadVideos = useCallback(async () => {
         try {
             const response = await fetchVideos({
@@ -29,7 +29,7 @@ export const useVideos = (params = {}) => {
         } catch (err) {
             setHasMore(false);
         }
-    }, [pages]); // Only depend on pages, not on fetchVideos or params
+    }, [pages]);
 
     const handleFetchVideoById = useCallback(
         async (videoId) => {
@@ -66,6 +66,27 @@ export const useVideos = (params = {}) => {
         [togglePublishStatus]
     );
 
+    const [trending, setTrending] = useState([]);
+    const [trendCursor, setTrendCursor] = useState(null);
+    const [subs, setSubs] = useState([]);
+    const [subsCursor, setSubsCursor] = useState(null);
+
+    const loadTrending = useCallback(async (cursor) => {
+        const res = await getTrendingVideos({ limit: 12, cursor });
+        const items = res?.items || [];
+        setTrending((prev) => (cursor ? [...prev, ...items] : items));
+        setTrendCursor(res?.nextCursor || null);
+        return items;
+    }, []);
+
+    const loadSubscriptionFeed = useCallback(async (cursor) => {
+        const res = await getSubscriptionFeed({ limit: 12, cursor });
+        const items = res?.items || [];
+        setSubs((prev) => (cursor ? [...prev, ...items] : items));
+        setSubsCursor(res?.nextCursor || null);
+        return items;
+    }, []);
+
     return {
         videos,
         selectedVideo,
@@ -74,11 +95,17 @@ export const useVideos = (params = {}) => {
         pages,
         setPages,
         hasMore,
-        loadVideos, // Return the manual load function
+        loadVideos,
         getVideoById: handleFetchVideoById,
         publishVideo: handlePublishVideo,
         updateVideo: handleUpdateVideo,
         deleteVideo: handleDeleteVideo,
         togglePublishStatus: handleTogglePublishStatus,
+        trending,
+        trendCursor,
+        loadTrending,
+        subs,
+        subsCursor,
+        loadSubscriptionFeed,
     };
 };
