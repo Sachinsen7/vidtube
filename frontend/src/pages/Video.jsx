@@ -32,12 +32,7 @@ const Video = () => {
     if (commentsError) return <Alert severity="error">{commentsError}</Alert>;
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                maxWidth: "100%",
-            }}
-        >
+        <Box sx={{ width: "100%", maxWidth: 1200, mx: "auto", p: { xs: 2, sm: 3 } }}>
             <Typography
                 variant="h4"
                 gutterBottom
@@ -46,8 +41,12 @@ const Video = () => {
                 Watch Video
             </Typography>
             <VideoPlayer video={selectedVideo} />
-            <CommentForm videoId={videoId} />
-            <CommentList videoId={videoId} />
+            <Box sx={{ mt: 2 }}>
+                <CommentForm videoId={videoId} />
+            </Box>
+            <Box sx={{ mt: 2 }}>
+                <CommentList videoId={videoId} />
+            </Box>
         </Box>
     );
 };
