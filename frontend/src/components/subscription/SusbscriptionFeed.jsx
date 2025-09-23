@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Typography, Grid, CircularProgress, Alert } from "@mui/material";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSubscriptions } from "../../hooks/useSubscriptions";
@@ -11,27 +11,21 @@ const SubscriptionFeed = ({ channelId }) => {
         isLoading: subLoading,
         error: subError,
     } = useSubscriptions(channelId);
-    const {
-        videos,
-        isLoading: videoLoading,
-        error: videoError,
-        pages,
-        setPages,
-        hasMore,
-    } = useVideos({
-        subscribed: true,
-    });
+    const { subs, subsCursor, loadSubscriptionFeed } = useVideos();
 
-    const loadMore = () => {
-        if (hasMore) setPages(pages + 1);
+    useEffect(() => {
+        loadSubscriptionFeed();
+    }, []);
+
+    const loadMore = async () => {
+        await loadSubscriptionFeed(subsCursor);
     };
 
-    if (subLoading || videoLoading)
+    if (subLoading)
         return (
             <CircularProgress sx={{ display: "block", mx: "auto", my: 2 }} />
         );
     if (subError) return <Alert severity="error">{subError}</Alert>;
-    if (videoError) return <Alert severity="error">{videoError}</Alert>;
 
     return (
         <Box sx={{ p: 2, backgroundColor: "var(--background-color)" }}>
@@ -43,9 +37,9 @@ const SubscriptionFeed = ({ channelId }) => {
                 Subscription Feed ({subscribedChannels.length} channels)
             </Typography>
             <InfiniteScroll
-                dataLength={videos.length}
+                dataLength={subs.length}
                 next={loadMore}
-                hasMore={hasMore}
+                hasMore={Boolean(subsCursor)}
                 loader={
                     <CircularProgress
                         sx={{ display: "block", mx: "auto", my: 2 }}
@@ -53,7 +47,7 @@ const SubscriptionFeed = ({ channelId }) => {
                 }
             >
                 <Grid container spacing={2}>
-                    {videos.map((video) => (
+                    {subs.map((video) => (
                         <Grid item xs={12} sm={6} md={4} key={video._id}>
                             <VideoCard video={video} />
                         </Grid>
