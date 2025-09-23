@@ -9,14 +9,15 @@ import {
     Box,
 } from "@mui/material";
 import { Favorite, Comment } from "@mui/icons-material";
-import ReactPlayer from "react-player";
+import useLikeStore from "../../stores/likeStore";
 import { formatDate } from "../../utils/formatDate";
 
 const VideoCard = ({ video }) => {
     const navigate = useNavigate();
+    const { toggleVideoLike } = useLikeStore();
+    const isLiked = Boolean(video.isLiked);
 
     const handleClick = () => {
-        // Navigate to the video detail page; data will be fetched on that page
         navigate(`/videos/${video._id}`);
     };
 
@@ -32,18 +33,12 @@ const VideoCard = ({ video }) => {
             }}
             onClick={handleClick}
         >
-            <CardMedia>
-                <Box sx={{ position: "relative", height: 200 }}>
-                    <ReactPlayer
-                        url={video.videoFile}
-                        width="100%"
-                        height="100%"
-                        playing={false}
-                        muted
-                        config={{ youtube: { playerVars: { controls: 0 } } }}
-                    />
-                </Box>
-            </CardMedia>
+            <CardMedia
+                component="img"
+                image={video.thumbnail || video.previewImage || "/Frame.png"}
+                alt={video.title}
+                sx={{ height: 200, objectFit: "cover" }}
+            />
             <CardContent>
                 <Typography
                     variant="h6"
@@ -59,14 +54,22 @@ const VideoCard = ({ video }) => {
                     {video.owner.username} • {formatDate(video.createdAt)}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                    <IconButton sx={{ color: "var(--success-color)" }}>
+                    <IconButton
+                        sx={{
+                            color: isLiked ? "#e91e63" : "var(--success-color)",
+                        }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            toggleVideoLike(video._id, isLiked);
+                        }}
+                    >
                         <Favorite />
                     </IconButton>
                     <Typography
                         variant="body2"
                         sx={{ color: "var(--primary-color)" }}
                     >
-                        {video.likes?.length || 0}
+                        {video.likesCount || 0}
                     </Typography>
                     <IconButton sx={{ color: "var(--success-color)", ml: 2 }}>
                         <Comment />
