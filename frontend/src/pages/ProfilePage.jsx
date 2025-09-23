@@ -16,6 +16,7 @@ import { useAuth } from "../hooks/useAuth";
 import TweetList from "../components/tweet/TweetList";
 import TweetForm from "../components/tweet/TweetForm";
 import VideoList from "../components/dashboard/VideoList";
+import { useVideos } from "../hooks/useVideo";
 
 const ProfilePage = () => {
     const {
@@ -27,6 +28,7 @@ const ProfilePage = () => {
         error,
     } = useAuth();
     const navigate = useNavigate();
+    const { videos, loadVideos, setPages } = useVideos({ userId: user?._id });
     const isMobile = useMediaQuery("(max-width:600px)");
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({ fullName: "", email: "" });
@@ -140,7 +142,6 @@ const ProfilePage = () => {
                 )}
             </Box>
 
-            {/* Profile Info */}
             <Box
                 sx={{
                     maxWidth: { xs: "100%", sm: 800 },
@@ -338,7 +339,11 @@ const ProfilePage = () => {
                         <TweetList userId={user._id} />
                     </>
                 )}
-                {tabValue === 1 && <VideoList />}
+                {tabValue === 1 && (
+                    <Box sx={{ mt: 2 }}>
+                        <VideoList />
+                    </Box>
+                )}
             </Box>
         </Box>
     );
