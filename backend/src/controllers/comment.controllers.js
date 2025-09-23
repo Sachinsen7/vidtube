@@ -5,10 +5,11 @@ import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import VideoModel from "../models/video.model.js";
 import LikeModel from "../models/like.model.js";
+import IdempotencyKeyModel from "../models/idempotency.model.js";
 
 const getVideoComments = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
-    const { page = 1, limit = 10 } = req.query;
+    const { page = 1, limit = 10, cursor, sort = "new" } = req.query;
 
     if (!mongoose.Types.ObjectId.isValid(videoId)) {
         throw new ApiError(400, "Invalid video id");
@@ -20,11 +21,20 @@ const getVideoComments = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Video not found");
     }
 
+    const matchStage = {
+        video: new mongoose.Types.ObjectId(videoId),
+    };
+
+    if (cursor) {
+        const cursorDate = new Date(cursor);
+        if (!isNaN(cursorDate.getTime())) {
+            matchStage.createdAt = { $lt: cursorDate };
+        }
+    }
+
     const comment = commentModel.aggregate([
         {
-            $match: {
-                video: new mongoose.Types.ObjectId(videoId),
-            },
+            $match: matchStage,
         },
         {
             $lookup: {
@@ -52,7 +62,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
                 },
                 isLiked: {
                     $cond: {
-                        if: { $in: [req.user?._id, "$likes.likedBy"] },
+                        if: { $in: [req.user?._id, "$likes.likedby"] },
                         then: true,
                         else: false,
                     },
@@ -72,11 +82,27 @@ const getVideoComments = asyncHandler(async (req, res) => {
             },
         },
         {
-            $sort: {
-                createdAt: -1,
-            },
+            $sort:
+                sort === "top"
+                    ? { likesCount: -1, createdAt: -1 }
+                    : { createdAt: -1 },
         },
     ]);
+
+    if (cursor) {
+        const docs = await comment.limit(parseInt(limit, 10)).exec();
+        const nextCursor =
+            docs.length > 0 ? docs[docs.length - 1].createdAt : null;
+        return res
+            .status(200)
+            .json(
+                new ApiResponse(
+                    200,
+                    { items: docs, nextCursor },
+                    "Comments fetched successfully"
+                )
+            );
+    }
 
     const options = {
         page: parseInt(page, 10),
@@ -99,6 +125,7 @@ const getVideoComments = asyncHandler(async (req, res) => {
 const addComment = asyncHandler(async (req, res) => {
     const { videoId } = req.params;
     const { content } = req.body;
+    const idempotencyKey = req.header("Idempotency-Key");
 
     if (!content || content.trim() === "") {
         throw new ApiError(400, "Comment content cannot be empty");
@@ -114,6 +141,30 @@ const addComment = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Video not found");
     }
 
+    if (idempotencyKey) {
+        const existing = await IdempotencyKeyModel.findOne({
+            key: idempotencyKey,
+            user: req.user?._id,
+            scope: "comment:create",
+        }).lean();
+        if (existing && existing.resourceId) {
+            const existingComment = await commentModel
+                .findById(existing.resourceId)
+                .lean();
+            if (existingComment) {
+                return res
+                    .status(existing.statusCode || 200)
+                    .json(
+                        new ApiResponse(
+                            existing.statusCode || 200,
+                            existingComment,
+                            "Comment added successfully"
+                        )
+                    );
+            }
+        }
+    }
+
     const comment = await commentModel.create({
         content,
         video: videoId,
@@ -122,6 +173,23 @@ const addComment = asyncHandler(async (req, res) => {
 
     if (!comment) {
         throw new ApiError(500, "Comment not created");
+    }
+
+    if (idempotencyKey) {
+        await IdempotencyKeyModel.updateOne(
+            { key: idempotencyKey },
+            {
+                $set: {
+                    key: idempotencyKey,
+                    user: req.user?._id,
+                    scope: "comment:create",
+                    resourceId: comment._id,
+                    statusCode: 201,
+                    expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                },
+            },
+            { upsert: true }
+        );
     }
 
     return res
