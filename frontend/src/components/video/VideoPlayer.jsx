@@ -1,7 +1,6 @@
-import React from "react";
 import { useState } from "react";
-import { Box, Typography } from "@mui/material";
-import ReactPlayer from "react-player";
+import { Box, Typography, Alert } from "@mui/material";
+import React from "react";
 
 const VideoPlayer = ({ video }) => {
     if (!video) return <Typography>No video selected</Typography>;
@@ -14,13 +13,17 @@ const VideoPlayer = ({ video }) => {
     }
 
     return (
-        <Box sx={{ width: "100%", maxWidth: "100%" }}>
-            <ReactPlayer
-                url={videoUrl}
-                width="100%"
-                height="450px"
+        <Box sx={{ width: "100%", maxWidth: "100%", mb: 2 }}>
+            <Box
+                component="video"
+                src={videoUrl}
                 controls
-                playing
+                style={{
+                    width: "100%",
+                    maxHeight: 540,
+                    borderRadius: 8,
+                    backgroundColor: "#000",
+                }}
                 onError={() => setErr("Failed to load video")}
             />
             {err && <Alert severity="error">{err}</Alert>}
