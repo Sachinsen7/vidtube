@@ -1,14 +1,14 @@
 import api from "./api";
 
 export const getComments = async (videoId, params = {}) => {
-    const response = await api.get(`/api/v1/videos/${videoId}/comments`, {
+    const response = await api.get(`/api/v1/comments/${videoId}`, {
         params,
     });
     return response.data.data;
 };
 
 export const addComments = async (videoId, content) => {
-    const response = await api.post(`/api/v1/videos/${videoId}/comments`, {
+    const response = await api.post(`/api/v1/comments/${videoId}`, {
         content,
     });
     return response.data.data;
