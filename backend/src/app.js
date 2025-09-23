@@ -37,6 +37,8 @@ import commentRouter from "./routes/comment.routes.js";
 import likeRouter from "./routes/like.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
+import feedRouter from "./routes/feed.routes.js";
+import trendingRouter from "./routes/trending.routes.js";
 
 app.use("/api/v1/healthcheck", healthCheckRoutes);
 app.use("/api/v1/users", userRouter);
@@ -47,6 +49,8 @@ app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/likes", likeRouter);
 app.use("/api/v1/playlists", playlistRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
+app.use("/api/v1/feed", feedRouter);
+app.use("/api/v1/trending", trendingRouter);
 
 app.use(errorHandler);
 
