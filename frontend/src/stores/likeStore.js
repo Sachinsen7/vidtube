@@ -1,9 +1,12 @@
 import { create } from "zustand";
 import {
     getLikedVideos,
-    toggleTweetLike,
-    toggleCommentLike,
-    toggleVideoLike,
+    likeTweet,
+    unlikeTweet,
+    likeComment,
+    unlikeComment,
+    likeVideo,
+    unlikeVideo,
 } from "../services/like";
 
 const useLikeStore = create((set) => ({
@@ -11,16 +14,14 @@ const useLikeStore = create((set) => ({
     isLoading: false,
     error: null,
 
-    toggleVideoLike: async (videoId) => {
+    toggleVideoLike: async (videoId, liked) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await toggleVideoLike(videoId);
-            set((state) => ({
-                likedVideos: response.isLiked
-                    ? [...state.likedVideos, response.video]
-                    : state.likedVideos.filter((v) => v._id !== videoId),
-                isLoading: false,
-            }));
+            const response = liked
+                ? await unlikeVideo(videoId)
+                : await likeVideo(videoId);
+            set({ isLoading: false });
+            return response;
         } catch (error) {
             set({
                 error:
@@ -31,11 +32,14 @@ const useLikeStore = create((set) => ({
         }
     },
 
-    toggleCommentLike: async (commentId) => {
+    toggleCommentLike: async (commentId, liked) => {
         set({ isLoading: true, error: null });
         try {
-            await toggleCommentLike(commentId);
+            const res = liked
+                ? await unlikeComment(commentId)
+                : await likeComment(commentId);
             set({ isLoading: false });
+            return res;
         } catch (error) {
             set({
                 error:
@@ -46,11 +50,14 @@ const useLikeStore = create((set) => ({
         }
     },
 
-    toggleTweetLike: async (tweetId) => {
+    toggleTweetLike: async (tweetId, liked) => {
         set({ isLoading: true, error: null });
         try {
-            await toggleTweetLike(tweetId);
+            const res = liked
+                ? await unlikeTweet(tweetId)
+                : await likeTweet(tweetId);
             set({ isLoading: false });
+            return res;
         } catch (error) {
             set({
                 error:
