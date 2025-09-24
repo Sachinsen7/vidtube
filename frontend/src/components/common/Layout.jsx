@@ -18,6 +18,7 @@ import {
     Avatar,
     Menu,
     MenuItem,
+    Tooltip,
 } from "@mui/material";
 import {
     Menu as MenuIcon,
@@ -33,7 +34,6 @@ import {
     Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth";
-// import logo from "../../assets/logo.png";
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -41,7 +41,7 @@ const Layout = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const isMobile = useMediaQuery("(max-width:600px)");
     const [profileMenuEl, setProfileMenuEl] = useState(null);
-    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
     const handleLogout = async () => {
         await logout();
@@ -51,143 +51,194 @@ const Layout = () => {
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
-    const handleSidebarToggle = () => {
-        setSidebarOpen((prev) => !prev);
+
+    const handleSidebarMouseEnter = () => {
+        if (!isMobile) {
+            setSidebarExpanded(true);
+        }
+    };
+
+    const handleSidebarMouseLeave = () => {
+        if (!isMobile) {
+            setSidebarExpanded(false);
+        }
+    };
+
+    const sidebarWidth = sidebarExpanded ? 250 : 72;
+
+    const menuItems = [
+        { text: "Home", icon: <HomeIcon />, path: "/", requireAuth: false },
+        {
+            text: "Subscriptions",
+            icon: <SubscriptionsIcon />,
+            path: "/subscriptions",
+            requireAuth: true,
+        },
+        {
+            text: "Your Videos",
+            icon: <VideoLibraryIcon />,
+            path: "/videos",
+            requireAuth: true,
+        },
+        {
+            text: "Upload",
+            icon: <CloudUploadIcon />,
+            path: "/upload",
+            requireAuth: true,
+        },
+        {
+            text: "Posts",
+            icon: <ArticleIcon />,
+            path: "/dashboard",
+            requireAuth: true,
+        },
+        {
+            text: "Profile",
+            icon: <PersonIcon />,
+            path: "/profile",
+            requireAuth: true,
+        },
+        {
+            text: "Logout",
+            icon: <LogoutIcon />,
+            action: "logout",
+            requireAuth: true,
+        },
+    ];
+
+    const authItems = [
+        { text: "Login", path: "/login" },
+        { text: "Register", path: "/register" },
+    ];
+
+    const renderMenuItem = (item, index) => {
+        if (item.requireAuth && !user) return null;
+
+        const handleClick = () => {
+            if (item.action === "logout") {
+                handleLogout();
+            } else {
+                navigate(item.path);
+            }
+            setMobileOpen(false);
+        };
+
+        return (
+            <ListItem
+                key={index}
+                button
+                onClick={handleClick}
+                sx={{
+                    minHeight: 48,
+                    justifyContent: sidebarExpanded ? "initial" : "center",
+                    px: 2.5,
+                    "&:hover": {
+                        backgroundColor: "rgba(4, 54, 100, 0.08)",
+                    },
+                }}
+            >
+                <ListItemIcon
+                    sx={{
+                        minWidth: 0,
+                        mr: sidebarExpanded ? 3 : "auto",
+                        justifyContent: "center",
+                        color: "var(--primary-color)",
+                    }}
+                >
+                    {!isMobile && !sidebarExpanded ? (
+                        <Tooltip title={item.text} placement="right">
+                            {item.icon}
+                        </Tooltip>
+                    ) : (
+                        item.icon
+                    )}
+                </ListItemIcon>
+                {(sidebarExpanded || isMobile) && (
+                    <ListItemText
+                        primary={item.text}
+                        sx={{
+                            opacity: sidebarExpanded || isMobile ? 1 : 0,
+                            color: "var(--primary-color)",
+                        }}
+                    />
+                )}
+            </ListItem>
+        );
     };
 
     const drawerContent = (
         <Box
             sx={{
-                width: 250,
-                p: 2,
+                width: isMobile ? 250 : sidebarWidth,
+                height: "100%",
                 background: "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                transition: "width 0.3s ease",
             }}
+            onMouseEnter={handleSidebarMouseEnter}
+            onMouseLeave={handleSidebarMouseLeave}
         >
-            <Typography
-                variant="h6"
+            <Box
                 sx={{
-                    color: "var(--primary-color)",
-                    mb: 2,
-                    fontWeight: "bold",
+                    p: 2,
+                    borderBottom: "1px solid rgba(4, 54, 100, 0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent:
+                        sidebarExpanded || isMobile ? "flex-start" : "center",
                 }}
             >
-                VidTube
-            </Typography>
-            <List>
-                <ListItem
-                    button
-                    onClick={() => {
-                        navigate("/");
-                        setMobileOpen(false);
+                <Typography
+                    variant="h6"
+                    sx={{
+                        color: "var(--primary-color)",
+                        fontWeight: "bold",
+                        opacity: sidebarExpanded || isMobile ? 1 : 0,
+                        transition: "opacity 0.3s ease",
+                        whiteSpace: "nowrap",
                     }}
                 >
-                    <ListItemIcon>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Home" />
-                </ListItem>
-                {user && (
-                    <>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/subscriptions");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <SubscriptionsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Subscriptions" />
-                        </ListItem>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/videos");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <VideoLibraryIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Your Videos" />
-                        </ListItem>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/upload");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <CloudUploadIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Upload" />
-                        </ListItem>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/dashboard");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <ArticleIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Posts" />
-                        </ListItem>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/profile");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <PersonIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Profile" />
-                        </ListItem>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                handleLogout();
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemIcon>
-                                <LogoutIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Logout" />
-                        </ListItem>
-                    </>
-                )}
+                    VidTube
+                </Typography>
+            </Box>
+            <List>
+                {menuItems.map(renderMenuItem)}
                 {!user && (
                     <>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/login");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemText
-                                primary="Login"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
-                        </ListItem>
-                        <ListItem
-                            button
-                            onClick={() => {
-                                navigate("/register");
-                                setMobileOpen(false);
-                            }}
-                        >
-                            <ListItemText
-                                primary="Register"
-                                sx={{ color: "var(--primary-color)" }}
-                            />
-                        </ListItem>
+                        {authItems.map((item, index) => (
+                            <ListItem
+                                key={`auth-${index}`}
+                                button
+                                onClick={() => {
+                                    navigate(item.path);
+                                    setMobileOpen(false);
+                                }}
+                                sx={{
+                                    minHeight: 48,
+                                    justifyContent:
+                                        sidebarExpanded || isMobile
+                                            ? "initial"
+                                            : "center",
+                                    px: 2.5,
+                                    "&:hover": {
+                                        backgroundColor:
+                                            "rgba(4, 54, 100, 0.08)",
+                                    },
+                                }}
+                            >
+                                {(sidebarExpanded || isMobile) && (
+                                    <ListItemText
+                                        primary={item.text}
+                                        sx={{
+                                            color: "var(--primary-color)",
+                                            opacity:
+                                                sidebarExpanded || isMobile
+                                                    ? 1
+                                                    : 0,
+                                        }}
+                                    />
+                                )}
+                            </ListItem>
+                        ))}
                     </>
                 )}
             </List>
@@ -211,15 +262,14 @@ const Layout = () => {
                     background:
                         "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
                     boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
+                    zIndex: (theme) => theme.zIndex.drawer + 1,
                 }}
             >
                 <Toolbar sx={{ flexWrap: "wrap" }}>
                     <IconButton
                         edge="start"
                         sx={{ color: "#fcffff", mr: 2 }}
-                        onClick={
-                            isMobile ? handleDrawerToggle : handleSidebarToggle
-                        }
+                        onClick={handleDrawerToggle}
                     >
                         <MenuIcon />
                     </IconButton>
@@ -234,7 +284,6 @@ const Layout = () => {
                     >
                         <img
                             src=""
-                            // +                            src={undefined}
                             alt="VidTube Logo"
                             style={{ height: 40, marginRight: 8 }}
                         />
@@ -373,16 +422,17 @@ const Layout = () => {
                 </Drawer>
             ) : (
                 <Drawer
-                    variant="persistent"
-                    open={sidebarOpen}
+                    variant="permanent"
                     sx={{
-                        width: 250,
+                        width: sidebarWidth,
                         flexShrink: 0,
                         [`& .MuiDrawer-paper`]: {
-                            width: 250,
+                            width: sidebarWidth,
                             boxSizing: "border-box",
                             background:
                                 "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                            transition: "width 0.3s ease",
+                            overflowX: "hidden",
                         },
                     }}
                 >
@@ -399,7 +449,12 @@ const Layout = () => {
                     width: "100%",
                     maxWidth: "100%",
                     px: { xs: 2, sm: 3, md: 4 },
-                    ml: { sm: 0, md: sidebarOpen ? 32 : 0 },
+                    ml: {
+                        xs: 0,
+                        sm: 0,
+                        md: `${sidebarWidth}px`,
+                    },
+                    transition: "margin-left 0.3s ease",
                 }}
             >
                 <Outlet />
@@ -416,6 +471,12 @@ const Layout = () => {
                     color: "#fcffff",
                     textAlign: "center",
                     borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+                    ml: {
+                        xs: 0,
+                        sm: 0,
+                        md: `${sidebarWidth}px`,
+                    },
+                    transition: "margin-left 0.3s ease",
                 }}
             >
                 <Typography variant="body2">
