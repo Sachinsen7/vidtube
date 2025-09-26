@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
     Box,
     Typography,
@@ -6,12 +6,10 @@ import {
     Card,
     CardContent,
     Avatar,
-    Chip,
     IconButton,
+    Chip,
     useMediaQuery,
     useTheme,
-    Fade,
-    Zoom,
 } from "@mui/material";
 import {
     PlayArrow as PlayIcon,
@@ -20,9 +18,7 @@ import {
     ThumbDown as DislikeIcon,
     Share as ShareIcon,
     BookmarkBorder as SaveIcon,
-    MoreVert as MoreIcon,
 } from "@mui/icons-material";
-import React from "react";
 
 const VideoPlayer = ({ video }) => {
     const theme = useTheme();
@@ -42,14 +38,20 @@ const VideoPlayer = ({ video }) => {
         return (
             <Card
                 sx={{
-                    background:
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    color: "white",
+                    bgcolor: "white",
+                    p: 2,
+                    borderRadius: 2,
+                    border: "1px solid #e0e0e0",
                     textAlign: "center",
-                    p: 4,
                 }}
             >
-                <Typography variant="h6">No video selected</Typography>
+                <Typography
+                    variant="h6"
+                    sx={{ color: "#1976d2" }}
+                    data-testid="no-video"
+                >
+                    No video selected
+                </Typography>
             </Card>
         );
     }
@@ -58,7 +60,11 @@ const VideoPlayer = ({ video }) => {
 
     if (!videoUrl) {
         return (
-            <Alert severity="error" sx={{ borderRadius: 2 }}>
+            <Alert
+                severity="error"
+                sx={{ borderRadius: 2 }}
+                data-testid="no-video-url"
+            >
                 No video URL available
             </Alert>
         );
@@ -80,264 +86,202 @@ const VideoPlayer = ({ video }) => {
     };
 
     return (
-        <Fade in={videoLoaded} timeout={800}>
-            <Box sx={{ width: "100%", mb: 3 }}>
-                {/* Video Container */}
+        <Box sx={{ mb: 2 }} data-testid="video-player">
+            <Box
+                sx={{
+                    position: "relative",
+                    width: "100%",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                    bgcolor: "#000",
+                    border: "1px solid #e0e0e0",
+                }}
+                onClick={handleVideoClick}
+            >
+                <Box
+                    component="video"
+                    ref={videoRef}
+                    src={videoUrl}
+                    controls
+                    sx={{
+                        width: "100%",
+                        height: isMobile ? 200 : 400,
+                        objectFit: "cover",
+                        display: "block",
+                    }}
+                    onError={() => setErr("Failed to load video")}
+                    onLoadedData={() => setErr(null)}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    data-testid="video-element"
+                />
                 <Box
                     sx={{
-                        position: "relative",
-                        width: "100%",
-                        borderRadius: 3,
-                        overflow: "hidden",
-                        boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                        background: "#000",
-                        cursor: "pointer",
-                        "&:hover .video-overlay": {
-                            opacity: 1,
-                        },
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        opacity: isPlaying ? 0 : 0.8,
+                        transition: "opacity 0.3s ease",
+                        bgcolor: "rgba(0, 0, 0, 0.5)",
+                        pointerEvents: isPlaying ? "none" : "auto",
                     }}
-                    onClick={handleVideoClick}
                 >
-                    <Box
-                        component="video"
-                        ref={videoRef}
-                        src={videoUrl}
-                        controls
-                        style={{
-                            width: "100%",
-                            height: isMobile ? "200px" : "500px",
-                            objectFit: "cover",
-                            display: "block",
-                        }}
-                        onError={() => setErr("Failed to load video")}
-                        onLoadedData={() => setErr(null)}
-                        onPlay={() => setIsPlaying(true)}
-                        onPause={() => setIsPlaying(false)}
-                    />
-
-                    {/* Video Overlay */}
-                    <Box
-                        className="video-overlay"
+                    <IconButton
                         sx={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background:
-                                "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%)",
-                            opacity: 0,
-                            transition: "opacity 0.3s ease",
+                            bgcolor: "white",
+                            "&:hover": { bgcolor: "#e3f2fd" },
+                            pointerEvents: "auto",
+                        }}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlayPause();
+                        }}
+                        data-testid="play-pause-button"
+                    >
+                        {isPlaying ? (
+                            <PauseIcon sx={{ color: "#1976d2" }} />
+                        ) : (
+                            <PlayIcon sx={{ color: "#1976d2" }} />
+                        )}
+                    </IconButton>
+                </Box>
+            </Box>
+            {err && (
+                <Alert
+                    severity="error"
+                    sx={{ mt: 2, borderRadius: 2 }}
+                    data-testid="error-alert"
+                >
+                    {err}
+                </Alert>
+            )}
+            <Card
+                sx={{
+                    bgcolor: "white",
+                    borderRadius: 2,
+                    mt: 2,
+                    border: "1px solid #e0e0e0",
+                }}
+            >
+                <CardContent sx={{ p: 2 }}>
+                    <Typography
+                        variant={isMobile ? "h6" : "h5"}
+                        sx={{ color: "#1976d2", fontWeight: 600, mb: 1 }}
+                        data-testid="video-title"
+                    >
+                        {video.title}
+                    </Typography>
+                    <Box
+                        sx={{
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center",
-                            pointerEvents: "none",
+                            gap: 2,
+                            mb: 2,
                         }}
                     >
-                        <Zoom in={!isPlaying}>
-                            <IconButton
-                                sx={{
-                                    background: "rgba(255, 255, 255, 0.9)",
-                                    backdropFilter: "blur(10px)",
-                                    "&:hover": {
-                                        background: "rgba(255, 255, 255, 1)",
-                                        transform: "scale(1.1)",
-                                    },
-                                    transition: "all 0.3s ease",
-                                    pointerEvents: "auto",
-                                }}
-                                size="large"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handlePlayPause();
-                                }}
+                        <Avatar
+                            src={video.owner?.avatar}
+                            sx={{ width: 40, height: 40 }}
+                            data-testid="owner-avatar"
+                        >
+                            {video.owner?.username?.charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Box>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{ color: "#1976d2", fontWeight: 600 }}
+                                data-testid="owner-name"
                             >
-                                {isPlaying ? (
-                                    <PauseIcon sx={{ fontSize: 40 }} />
-                                ) : (
-                                    <PlayIcon sx={{ fontSize: 40 }} />
-                                )}
-                            </IconButton>
-                        </Zoom>
+                                {video.owner?.fullName ||
+                                    video.owner?.username ||
+                                    "Unknown Creator"}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{ color: "#757575" }}
+                                data-testid="video-meta"
+                            >
+                                {video.views || 0} views •{" "}
+                                {new Date(video.createdAt).toLocaleDateString()}
+                            </Typography>
+                        </Box>
                     </Box>
-                </Box>
-
-                {err && (
-                    <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
-                        {err}
-                    </Alert>
-                )}
-
-                {/* Video Info Card */}
-                <Card
-                    sx={{
-                        mt: 3,
-                        background: "rgba(255, 255, 255, 0.95)",
-                        backdropFilter: "blur(20px)",
-                        borderRadius: 3,
-                        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
-                        border: "1px solid rgba(255, 255, 255, 0.3)",
-                        overflow: "visible",
-                    }}
-                >
-                    <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
-                        {/* Video Title */}
-                        <Typography
-                            variant={isMobile ? "h5" : "h4"}
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: 1,
+                            flexWrap: "wrap",
+                            mb: 2,
+                        }}
+                    >
+                        <Chip
+                            icon={<LikeIcon />}
+                            label={`${video.likesCount || 0} likes`}
+                            variant="outlined"
+                            clickable
                             sx={{
-                                color: "var(--primary-color)",
-                                fontWeight: 700,
-                                mb: 2,
-                                lineHeight: 1.2,
-                                background:
-                                    "linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)",
-                                backgroundClip: "text",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
+                                borderColor: "#1976d2",
+                                color: "#1976d2",
+                                "&:hover": { bgcolor: "#e3f2fd" },
                             }}
-                        >
-                            {video.title}
-                        </Typography>
-
-                        {/* Video Meta Info */}
-                        <Box
+                            data-testid="like-button"
+                        />
+                        <Chip
+                            icon={<DislikeIcon />}
+                            label="Dislike"
+                            variant="outlined"
+                            clickable
                             sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                flexWrap: "wrap",
-                                gap: 2,
-                                mb: 3,
+                                borderColor: "#757575",
+                                color: "#757575",
+                                "&:hover": { bgcolor: "#f5f5f5" },
                             }}
-                        >
-                            <Avatar
-                                src={video.owner?.avatar}
-                                sx={{
-                                    width: 48,
-                                    height: 48,
-                                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                                }}
+                            data-testid="dislike-button"
+                        />
+                        <Chip
+                            icon={<ShareIcon />}
+                            label="Share"
+                            variant="outlined"
+                            clickable
+                            sx={{
+                                borderColor: "#757575",
+                                color: "#757575",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                            }}
+                            data-testid="share-button"
+                        />
+                        <Chip
+                            icon={<SaveIcon />}
+                            label="Save"
+                            variant="outlined"
+                            clickable
+                            sx={{
+                                borderColor: "#757575",
+                                color: "#757575",
+                                "&:hover": { bgcolor: "#f5f5f5" },
+                            }}
+                            data-testid="save-button"
+                        />
+                    </Box>
+                    {video.description && (
+                        <Box sx={{ bgcolor: "#f5f5f5", borderRadius: 2, p: 2 }}>
+                            <Typography
+                                variant="body1"
+                                sx={{ color: "#1976d2", fontSize: "0.95rem" }}
+                                data-testid="video-description"
                             >
-                                {video.owner?.username?.charAt(0).toUpperCase()}
-                            </Avatar>
-                            <Box sx={{ flex: 1, minWidth: 0 }}>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        color: "var(--primary-color)",
-                                        fontWeight: 600,
-                                        mb: 0.5,
-                                    }}
-                                >
-                                    {video.owner?.fullName ||
-                                        video.owner?.username ||
-                                        "Unknown Creator"}
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    sx={{ color: "var(--secondary-color)" }}
-                                >
-                                    {video.views || 0} views •{" "}
-                                    {new Date(
-                                        video.createdAt
-                                    ).toLocaleDateString()}
-                                </Typography>
-                            </Box>
+                                {video.description}
+                            </Typography>
                         </Box>
-
-                        {/* Action Buttons */}
-                        <Box
-                            sx={{
-                                display: "flex",
-                                gap: 1,
-                                mb: 3,
-                                flexWrap: "wrap",
-                            }}
-                        >
-                            <Chip
-                                icon={<LikeIcon />}
-                                label={`${video.likesCount || 0} likes`}
-                                variant="outlined"
-                                clickable
-                                sx={{
-                                    borderColor: "var(--primary-color)",
-                                    color: "var(--primary-color)",
-                                    "&:hover": {
-                                        background: "var(--primary-color)",
-                                        color: "white",
-                                    },
-                                    transition: "all 0.3s ease",
-                                }}
-                            />
-                            <Chip
-                                icon={<DislikeIcon />}
-                                label="Dislike"
-                                variant="outlined"
-                                clickable
-                                sx={{
-                                    borderColor: "var(--secondary-color)",
-                                    color: "var(--secondary-color)",
-                                    "&:hover": {
-                                        background: "var(--secondary-color)",
-                                        color: "white",
-                                    },
-                                }}
-                            />
-                            <Chip
-                                icon={<ShareIcon />}
-                                label="Share"
-                                variant="outlined"
-                                clickable
-                                sx={{
-                                    borderColor: "var(--secondary-color)",
-                                    color: "var(--secondary-color)",
-                                    "&:hover": {
-                                        background: "var(--secondary-color)",
-                                        color: "white",
-                                    },
-                                }}
-                            />
-                            <Chip
-                                icon={<SaveIcon />}
-                                label="Save"
-                                variant="outlined"
-                                clickable
-                                sx={{
-                                    borderColor: "var(--secondary-color)",
-                                    color: "var(--secondary-color)",
-                                    "&:hover": {
-                                        background: "var(--secondary-color)",
-                                        color: "white",
-                                    },
-                                }}
-                            />
-                        </Box>
-
-                        {/* Video Description */}
-                        {video.description && (
-                            <Box
-                                sx={{
-                                    background: "rgba(248, 250, 252, 0.8)",
-                                    borderRadius: 2,
-                                    p: 3,
-                                    border: "1px solid rgba(0, 0, 0, 0.08)",
-                                }}
-                            >
-                                <Typography
-                                    variant="body1"
-                                    sx={{
-                                        color: "var(--primary-color)",
-                                        lineHeight: 1.7,
-                                        fontSize: { xs: "0.95rem", sm: "1rem" },
-                                    }}
-                                >
-                                    {video.description}
-                                </Typography>
-                            </Box>
-                        )}
-                    </CardContent>
-                </Card>
-            </Box>
-        </Fade>
+                    )}
+                </CardContent>
+            </Card>
+        </Box>
     );
 };
 
