@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import {
+    Box,
+    Typography,
+    TextField,
+    Button,
+    CircularProgress,
+    Alert,
+} from "@mui/material";
 import { useComments } from "../../hooks/useComments";
-import Button from "../common/Button";
-import Input from "../common/Input";
 
 const CommentForm = ({ videoId }) => {
     const [content, setContent] = useState("");
@@ -19,37 +24,51 @@ const CommentForm = ({ videoId }) => {
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{
-                maxWidth: 600,
-                mx: "auto",
-                p: 2,
-                backgroundColor: "var(--background-color)",
-            }}
+            sx={{ maxWidth: 600, mx: "auto" }}
         >
             <Typography
                 variant="h6"
-                gutterBottom
-                sx={{ color: "var(--primary-color)" }}
+                sx={{ color: "#1976d2", mb: 2 }}
+                data-testid="comment-form-title"
             >
                 Add a Comment
             </Typography>
             {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
+                <Alert
+                    severity="error"
+                    sx={{ mb: 2, borderRadius: 2 }}
+                    data-testid="error-alert"
+                >
                     {error}
                 </Alert>
             )}
-            <Input
+            <TextField
                 label="Comment"
                 name="content"
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 multiline
                 rows={4}
+                fullWidth
                 required
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 2,
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="comment-input"
             />
-            <Button type="submit" disabled={isLoading}>
-                {isLoading ? <CircularProgress size={24} /> : "Post Comment"}
+            <Button
+                type="submit"
+                disabled={isLoading}
+                variant="contained"
+                sx={{ bgcolor: "#1976d2", borderRadius: 1 }}
+                data-testid="post-comment"
+            >
+                {isLoading ? (
+                    <CircularProgress size={24} sx={{ color: "white" }} />
+                ) : (
+                    "Post Comment"
+                )}
             </Button>
         </Box>
     );
