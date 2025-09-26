@@ -16,7 +16,6 @@ import { useAuth } from "../hooks/useAuth";
 import TweetList from "../components/tweet/TweetList";
 import TweetForm from "../components/tweet/TweetForm";
 import VideoList from "../components/dashboard/VideoList";
-import { useVideos } from "../hooks/useVideo";
 
 const ProfilePage = () => {
     const {
@@ -28,7 +27,6 @@ const ProfilePage = () => {
         error,
     } = useAuth();
     const navigate = useNavigate();
-    const { videos, loadVideos, setPages } = useVideos({ userId: user?._id });
     const isMobile = useMediaQuery("(max-width:600px)");
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({ fullName: "", email: "" });
@@ -46,17 +44,17 @@ const ProfilePage = () => {
         return (
             <Box
                 sx={{
-                    p: { xs: 2, sm: 3, md: 4 },
+                    p: 2,
                     textAlign: "center",
-                    background:
-                        "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
-                    borderRadius: 3,
-                    boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
+                    bgcolor: "white",
+                    borderRadius: 2,
+                    border: "1px solid #e0e0e0",
                 }}
             >
                 <Typography
-                    variant={isMobile ? "h5" : "h4"}
-                    sx={{ color: "var(--primary-color)", fontWeight: "bold" }}
+                    variant="h5"
+                    sx={{ color: "#1976d2" }}
+                    data-testid="login-required"
                 >
                     Please log in to view your profile
                 </Typography>
@@ -93,245 +91,207 @@ const ProfilePage = () => {
     };
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                maxWidth: "100%",
-                background: "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
-            }}
-        >
-            {/* Cover Image */}
+        <Box sx={{ bgcolor: "#f5f5f5", p: 2 }}>
             <Box
                 sx={{
-                    height: { xs: 150, sm: 200, md: 250 },
-                    backgroundImage: `url(${user.coverImage || "https://via.placeholder.com/1200x300?text=Cover+Image"})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    borderRadius: "0 0 20px 20px",
-                    boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
-                    position: "relative",
-                }}
-            >
-                {editMode && (
-                    <Box sx={{ position: "absolute", bottom: 10, right: 10 }}>
-                        <input
-                            accept="image/*"
-                            style={{ display: "none" }}
-                            id="cover-upload"
-                            type="file"
-                            onChange={handleCoverChange}
-                        />
-                        <label htmlFor="cover-upload">
-                            <Button
-                                component="span"
-                                sx={{
-                                    background:
-                                        "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
-                                    color: "#fcffff",
-                                    borderRadius: 2,
-                                    "&:hover": {
-                                        background:
-                                            "linear-gradient(45deg, #032e4b 30%, #e04416 90%)",
-                                    },
-                                }}
-                            >
-                                Change Cover
-                            </Button>
-                        </label>
-                    </Box>
-                )}
-            </Box>
-
-            <Box
-                sx={{
-                    maxWidth: { xs: "100%", sm: 800 },
+                    maxWidth: 800,
                     mx: "auto",
-                    p: { xs: 2, sm: 3 },
-                    mt: -10,
-                    background:
-                        "linear-gradient(135deg, #fcffff 0%, #f0f4f8 100%)",
-                    borderRadius: 3,
-                    boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
+                    bgcolor: "white",
+                    borderRadius: 2,
+                    border: "1px solid #e0e0e0",
+                    overflow: "hidden",
                 }}
             >
-                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                    <Avatar
-                        src={user.avatar}
-                        sx={{
-                            width: { xs: 80, sm: 100 },
-                            height: { xs: 80, sm: 100 },
-                            border: "3px solid var(--background-color)",
-                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                        }}
-                    />
+                <Box
+                    sx={{
+                        height: { xs: 120, sm: 150 },
+                        backgroundImage: `url(${user.coverImage || "https://via.placeholder.com/800x150?text=Cover+Image"})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                >
                     {editMode && (
-                        <Box sx={{ ml: 2 }}>
+                        <Box sx={{ position: "absolute", bottom: 8, right: 8 }}>
                             <input
                                 accept="image/*"
                                 style={{ display: "none" }}
-                                id="avatar-upload"
+                                id="cover-upload"
                                 type="file"
-                                onChange={handleAvatarChange}
+                                onChange={handleCoverChange}
                             />
-                            <label htmlFor="avatar-upload">
+                            <label htmlFor="cover-upload">
                                 <Button
                                     component="span"
-                                    sx={{
-                                        background:
-                                            "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
-                                        color: "#fcffff",
-                                        borderRadius: 2,
-                                        "&:hover": {
-                                            background:
-                                                "linear-gradient(45deg, #032e4b 30%, #e04416 90%)",
-                                        },
-                                    }}
+                                    variant="contained"
+                                    sx={{ bgcolor: "#1976d2", borderRadius: 1 }}
+                                    data-testid="change-cover"
                                 >
-                                    Change Avatar
+                                    Change Cover
                                 </Button>
                             </label>
                         </Box>
                     )}
                 </Box>
-                <Box component="form" onSubmit={handleSubmit}>
-                    <Typography
-                        variant={isMobile ? "h5" : "h4"}
-                        sx={{
-                            color: "var(--primary-color)",
-                            fontWeight: "bold",
-                        }}
-                    >
-                        {user.fullName}
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        sx={{ color: "var(--secondary-color)", mb: 2 }}
-                    >
-                        @{user.username} • {user.email}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        sx={{ color: "var(--primary-color)", mb: 2 }}
-                    >
-                        {user.subscribersCount || 0} Subscribers •{" "}
-                        {user.subscribedToCount || 0} Subscribed
-                    </Typography>
-                    {editMode ? (
-                        <>
-                            <TextField
-                                label="Full Name"
-                                name="fullName"
-                                value={formData.fullName}
-                                onChange={handleChange}
-                                fullWidth
-                                required
-                                sx={{
-                                    mb: 2,
-                                    "& fieldset": {
-                                        borderColor: "var(--primary-color)",
-                                    },
-                                }}
-                            />
-                            <TextField
-                                label="Email"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                fullWidth
-                                required
-                                sx={{
-                                    mb: 2,
-                                    "& fieldset": {
-                                        borderColor: "var(--primary-color)",
-                                    },
-                                }}
-                            />
-                            <Box sx={{ display: "flex", gap: 2 }}>
-                                <Button
-                                    type="submit"
-                                    disabled={isLoading}
-                                    sx={{
-                                        background:
-                                            "linear-gradient(45deg, var(--success-color) 30%, var(--secondary-color) 90%)",
-                                        color: "#fcffff",
-                                        borderRadius: 2,
-                                        "&:hover": {
-                                            background:
-                                                "linear-gradient(45deg, #3e5714 30%, #e04416 90%)",
-                                        },
-                                    }}
-                                >
-                                    {isLoading ? (
-                                        <CircularProgress
-                                            size={24}
-                                            sx={{ color: "#fcffff" }}
-                                        />
-                                    ) : (
-                                        "Save Changes"
-                                    )}
-                                </Button>
-                                <Button
-                                    onClick={() => setEditMode(false)}
-                                    sx={{
-                                        background:
-                                            "linear-gradient(45deg, #ccc 30%, #aaa 90%)",
-                                        color: "#fcffff",
-                                        borderRadius: 2,
-                                        "&:hover": {
-                                            background:
-                                                "linear-gradient(45deg, #bbb 30%, #999 90%)",
-                                        },
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                            </Box>
-                        </>
-                    ) : (
-                        <Button
-                            onClick={() => setEditMode(true)}
+                <Box sx={{ p: 3, mt: -5 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                        <Avatar
+                            src={user.avatar}
                             sx={{
-                                background:
-                                    "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
-                                color: "#fcffff",
-                                borderRadius: 2,
-                                "&:hover": {
-                                    background:
-                                        "linear-gradient(45deg, #032e4b 30%, #e04416 90%)",
-                                },
+                                width: 80,
+                                height: 80,
+                                border: "2px solid white",
                             }}
+                            data-testid="user-avatar"
+                        />
+                        {editMode && (
+                            <Box sx={{ ml: 2 }}>
+                                <input
+                                    accept="image/*"
+                                    style={{ display: "none" }}
+                                    id="avatar-upload"
+                                    type="file"
+                                    onChange={handleAvatarChange}
+                                />
+                                <label htmlFor="avatar-upload">
+                                    <Button
+                                        component="span"
+                                        variant="contained"
+                                        sx={{
+                                            bgcolor: "#1976d2",
+                                            borderRadius: 1,
+                                        }}
+                                        data-testid="change-avatar"
+                                    >
+                                        Change Avatar
+                                    </Button>
+                                </label>
+                            </Box>
+                        )}
+                    </Box>
+                    <Box component="form" onSubmit={handleSubmit}>
+                        <Typography
+                            variant="h5"
+                            sx={{ color: "#1976d2", fontWeight: 600 }}
+                            data-testid="user-fullname"
                         >
-                            Edit Profile
-                        </Button>
-                    )}
-                    {error && (
-                        <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
-                            {error}
-                        </Alert>
-                    )}
+                            {user.fullName}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{ color: "#757575", mb: 1 }}
+                            data-testid="user-info"
+                        >
+                            @{user.username} • {user.email}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{ color: "#757575", mb: 2 }}
+                            data-testid="user-stats"
+                        >
+                            {user.subscribersCount || 0} Subscribers •{" "}
+                            {user.subscribedToCount || 0} Subscribed
+                        </Typography>
+                        {editMode ? (
+                            <>
+                                <TextField
+                                    label="Full Name"
+                                    name="fullName"
+                                    value={formData.fullName}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                    sx={{
+                                        mb: 2,
+                                        "& .Mui-focused fieldset": {
+                                            borderColor: "#1976d2",
+                                        },
+                                    }}
+                                    data-testid="fullname-input"
+                                />
+                                <TextField
+                                    label="Email"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    required
+                                    sx={{
+                                        mb: 2,
+                                        "& .Mui-focused fieldset": {
+                                            borderColor: "#1976d2",
+                                        },
+                                    }}
+                                    data-testid="email-input"
+                                />
+                                <Box sx={{ display: "flex", gap: 2 }}>
+                                    <Button
+                                        type="submit"
+                                        disabled={isLoading}
+                                        variant="contained"
+                                        sx={{
+                                            bgcolor: "#1976d2",
+                                            borderRadius: 1,
+                                        }}
+                                        data-testid="save-changes"
+                                    >
+                                        {isLoading ? (
+                                            <CircularProgress
+                                                size={24}
+                                                sx={{ color: "white" }}
+                                            />
+                                        ) : (
+                                            "Save Changes"
+                                        )}
+                                    </Button>
+                                    <Button
+                                        onClick={() => setEditMode(false)}
+                                        variant="outlined"
+                                        sx={{
+                                            borderColor: "#757575",
+                                            color: "#757575",
+                                            borderRadius: 1,
+                                        }}
+                                        data-testid="cancel-edit"
+                                    >
+                                        Cancel
+                                    </Button>
+                                </Box>
+                            </>
+                        ) : (
+                            <Button
+                                onClick={() => setEditMode(true)}
+                                variant="contained"
+                                sx={{ bgcolor: "#1976d2", borderRadius: 1 }}
+                                data-testid="edit-profile"
+                            >
+                                Edit Profile
+                            </Button>
+                        )}
+                        {error && (
+                            <Alert
+                                severity="error"
+                                sx={{ mt: 2, borderRadius: 2 }}
+                                data-testid="error-alert"
+                            >
+                                {error}
+                            </Alert>
+                        )}
+                    </Box>
                 </Box>
             </Box>
-
-            <Box sx={{ maxWidth: { xs: "100%", sm: 800 }, mx: "auto", mt: 3 }}>
+            <Box sx={{ maxWidth: 800, mx: "auto", mt: 2 }}>
                 <Tabs
                     value={tabValue}
                     onChange={(e, newValue) => setTabValue(newValue)}
                     sx={{
-                        "& .MuiTab-root": {
-                            color: "var(--primary-color)",
-                            fontWeight: "bold",
-                            "&.Mui-selected": {
-                                color: "var(--secondary-color)",
-                            },
-                        },
-                        "& .MuiTabs-indicator": {
-                            backgroundColor: "var(--secondary-color)",
-                        },
+                        "& .MuiTab-root": { color: "#757575" },
+                        "& .Mui-selected": { color: "#1976d2" },
+                        "& .MuiTabs-indicator": { bgcolor: "#1976d2" },
                     }}
                 >
-                    <Tab label="Tweets" />
-                    <Tab label="Videos" />
+                    <Tab label="Tweets" data-testid="tweets-tab" />
+                    <Tab label="Videos" data-testid="videos-tab" />
                 </Tabs>
                 {tabValue === 0 && (
                     <>
@@ -339,11 +299,7 @@ const ProfilePage = () => {
                         <TweetList userId={user._id} />
                     </>
                 )}
-                {tabValue === 1 && (
-                    <Box sx={{ mt: 2 }}>
-                        <VideoList />
-                    </Box>
-                )}
+                {tabValue === 1 && <VideoList />}
             </Box>
         </Box>
     );
