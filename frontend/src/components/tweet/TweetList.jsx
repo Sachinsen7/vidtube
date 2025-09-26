@@ -6,13 +6,8 @@ import {
     Alert,
     useMediaQuery,
     useTheme,
-    Paper,
-    Chip,
 } from "@mui/material";
-import {
-    Article as ArticleIcon,
-    Timeline as TimelineIcon,
-} from "@mui/icons-material";
+import { Article as ArticleIcon } from "@mui/icons-material";
 import { useTweets } from "../../hooks/useTweets";
 import TweetCard from "./TweetCard";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -25,24 +20,23 @@ const TweetList = ({ userId }) => {
 
     if (isLoading && page === 1) {
         return (
-            <Paper
+            <Box
                 sx={{
-                    background: "rgba(255, 255, 255, 0.8)",
-                    backdropFilter: "blur(10px)",
-                    borderRadius: 4,
-                    p: 4,
+                    bgcolor: "white",
+                    p: 3,
+                    borderRadius: 2,
                     textAlign: "center",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    border: "1px solid #e0e0e0",
                 }}
             >
-                <CircularProgress
-                    size={50}
-                    sx={{ color: "var(--primary-color)" }}
-                />
-                <Typography sx={{ mt: 2, color: "var(--secondary-color)" }}>
+                <CircularProgress sx={{ color: "#1976d2" }} />
+                <Typography
+                    sx={{ mt: 2, color: "#757575" }}
+                    data-testid="loading-text"
+                >
                     Loading your posts...
                 </Typography>
-            </Paper>
+            </Box>
         );
     }
 
@@ -50,11 +44,8 @@ const TweetList = ({ userId }) => {
         return (
             <Alert
                 severity="error"
-                sx={{
-                    borderRadius: 3,
-                    background: "rgba(255, 255, 255, 0.9)",
-                    backdropFilter: "blur(10px)",
-                }}
+                sx={{ borderRadius: 2 }}
+                data-testid="error-alert"
             >
                 {error}
             </Alert>
@@ -62,124 +53,66 @@ const TweetList = ({ userId }) => {
     }
 
     return (
-        <Paper
+        <Box
             sx={{
-                background: "rgba(255, 255, 255, 0.9)",
-                backdropFilter: "blur(15px)",
-                borderRadius: 4,
-                p: { xs: 3, sm: 4 },
-                border: "1px solid rgba(255, 255, 255, 0.3)",
-                position: "relative",
-                overflow: "hidden",
-                "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "3px",
-                    background:
-                        "linear-gradient(90deg, #1da1f2 0%, #0d8bd9 100%)",
-                },
+                bgcolor: "white",
+                p: 3,
+                borderRadius: 2,
+                border: "1px solid #e0e0e0",
             }}
         >
-            {/* Header */}
-            <Box sx={{ mb: 3 }}>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                    <TimelineIcon
-                        sx={{
-                            fontSize: 28,
-                            color: "#1da1f2",
-                            mr: 2,
-                        }}
-                    />
-                    <Typography
-                        variant={isMobile ? "h6" : "h5"}
-                        sx={{
-                            color: "var(--primary-color)",
-                            fontWeight: 700,
-                            flex: 1,
-                        }}
-                    >
-                        Your Posts
-                    </Typography>
-                    {tweets.length > 0 && (
-                        <Chip
-                            label={`${tweets.length} posts`}
-                            size="small"
-                            sx={{
-                                background: "#1da1f2",
-                                color: "white",
-                                fontWeight: 600,
-                            }}
-                        />
-                    )}
-                </Box>
-            </Box>
-
-            {/* Posts List */}
+            <Typography
+                variant="h6"
+                sx={{ color: "#1976d2", mb: 2 }}
+                data-testid="tweets-title"
+            >
+                Your Posts
+            </Typography>
             <InfiniteScroll
                 dataLength={tweets.length}
                 next={() => setPage(page + 1)}
                 hasMore={hasMore}
                 loader={
-                    <Box
+                    <CircularProgress
                         sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            py: 3,
+                            color: "#1976d2",
+                            my: 2,
+                            display: "block",
+                            mx: "auto",
                         }}
-                    >
-                        <CircularProgress
-                            size={40}
-                            sx={{ color: "var(--primary-color)" }}
-                        />
-                    </Box>
+                    />
                 }
                 style={{ overflow: "visible" }}
             >
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                    {tweets.map((tweet, index) => (
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    {tweets.map((tweet) => (
                         <TweetCard
                             key={tweet._id}
                             tweet={tweet}
                             userId={userId}
-                            delay={index * 100}
+                            data-testid={`tweet-card-${tweet._id}`}
                         />
                     ))}
                 </Box>
             </InfiniteScroll>
-
-            {/* Empty State */}
             {!isLoading && tweets.length === 0 && (
-                <Box sx={{ textAlign: "center", py: 6 }}>
+                <Box sx={{ textAlign: "center", py: 4 }}>
                     <ArticleIcon
-                        sx={{
-                            fontSize: 64,
-                            color: "var(--secondary-color)",
-                            opacity: 0.5,
-                            mb: 2,
-                        }}
+                        sx={{ fontSize: 48, color: "#757575", mb: 2 }}
                     />
                     <Typography
                         variant="h6"
-                        sx={{
-                            color: "var(--secondary-color)",
-                            mb: 1,
-                            fontWeight: 500,
-                        }}
+                        sx={{ color: "#757575" }}
+                        data-testid="empty-state"
                     >
                         No posts yet
                     </Typography>
-                    <Typography
-                        variant="body2"
-                        sx={{ color: "var(--secondary-color)" }}
-                    >
+                    <Typography variant="body2" sx={{ color: "#757575" }}>
                         Share your first thought with the world!
                     </Typography>
                 </Box>
             )}
-        </Paper>
+        </Box>
     );
 };
 
