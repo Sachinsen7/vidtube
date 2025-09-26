@@ -18,7 +18,6 @@ import {
     Avatar,
     Menu,
     MenuItem,
-    Tooltip,
 } from "@mui/material";
 import {
     Menu as MenuIcon,
@@ -30,8 +29,6 @@ import {
     Person as PersonIcon,
     Logout as LogoutIcon,
     Search as SearchIcon,
-    Notifications as NotificationsIcon,
-    Settings as SettingsIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -46,6 +43,7 @@ const Layout = () => {
     const handleLogout = async () => {
         await logout();
         navigate("/login");
+        setProfileMenuEl(null);
     };
 
     const handleDrawerToggle = () => {
@@ -53,18 +51,14 @@ const Layout = () => {
     };
 
     const handleSidebarMouseEnter = () => {
-        if (!isMobile) {
-            setSidebarExpanded(true);
-        }
+        if (!isMobile) setSidebarExpanded(true);
     };
 
     const handleSidebarMouseLeave = () => {
-        if (!isMobile) {
-            setSidebarExpanded(false);
-        }
+        if (!isMobile) setSidebarExpanded(false);
     };
 
-    const sidebarWidth = sidebarExpanded ? 250 : 72;
+    const sidebarWidth = sidebarExpanded ? 240 : 72;
 
     const menuItems = [
         { text: "Home", icon: <HomeIcon />, path: "/", requireAuth: false },
@@ -111,136 +105,98 @@ const Layout = () => {
         { text: "Register", path: "/register" },
     ];
 
-    const renderMenuItem = (item, index) => {
-        if (item.requireAuth && !user) return null;
-
-        const handleClick = () => {
-            if (item.action === "logout") {
-                handleLogout();
-            } else {
-                navigate(item.path);
-            }
-            setMobileOpen(false);
-        };
-
-        return (
-            <ListItem
-                key={index}
-                button
-                onClick={handleClick}
-                sx={{
-                    minHeight: 48,
-                    justifyContent: sidebarExpanded ? "initial" : "center",
-                    px: 2.5,
-                    "&:hover": {
-                        backgroundColor: "rgba(4, 54, 100, 0.08)",
-                    },
-                }}
-            >
-                <ListItemIcon
-                    sx={{
-                        minWidth: 0,
-                        mr: sidebarExpanded ? 3 : "auto",
-                        justifyContent: "center",
-                        color: "var(--primary-color)",
-                    }}
-                >
-                    {!isMobile && !sidebarExpanded ? (
-                        <Tooltip title={item.text} placement="right">
-                            {item.icon}
-                        </Tooltip>
-                    ) : (
-                        item.icon
-                    )}
-                </ListItemIcon>
-                {(sidebarExpanded || isMobile) && (
-                    <ListItemText
-                        primary={item.text}
-                        sx={{
-                            opacity: sidebarExpanded || isMobile ? 1 : 0,
-                            color: "var(--primary-color)",
-                        }}
-                    />
-                )}
-            </ListItem>
-        );
-    };
-
     const drawerContent = (
         <Box
             sx={{
-                width: isMobile ? 250 : sidebarWidth,
+                width: isMobile ? 240 : sidebarWidth,
+                bgcolor: "#f5f5f5",
                 height: "100%",
-                background: "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                p: 2,
                 transition: "width 0.3s ease",
             }}
             onMouseEnter={handleSidebarMouseEnter}
             onMouseLeave={handleSidebarMouseLeave}
         >
-            <Box
+            <Typography
+                variant="h6"
                 sx={{
-                    p: 2,
-                    borderBottom: "1px solid rgba(4, 54, 100, 0.1)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent:
-                        sidebarExpanded || isMobile ? "flex-start" : "center",
+                    fontWeight: 600,
+                    color: "#1976d2",
+                    mb: 2,
+                    pl: 2,
+                    opacity: sidebarExpanded || isMobile ? 1 : 0,
+                    transition: "opacity 0.3s ease",
                 }}
             >
-                <Typography
-                    variant="h6"
-                    sx={{
-                        color: "var(--primary-color)",
-                        fontWeight: "bold",
-                        opacity: sidebarExpanded || isMobile ? 1 : 0,
-                        transition: "opacity 0.3s ease",
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    VidTube
-                </Typography>
-            </Box>
+                VidTube
+            </Typography>
             <List>
-                {menuItems.map(renderMenuItem)}
-                {!user && (
-                    <>
-                        {authItems.map((item, index) => (
-                            <ListItem
-                                key={`auth-${index}`}
-                                button
-                                onClick={() => {
-                                    navigate(item.path);
-                                    setMobileOpen(false);
-                                }}
+                {menuItems.map((item, index) =>
+                    item.requireAuth && !user ? null : (
+                        <ListItem
+                            key={index}
+                            button
+                            onClick={() => {
+                                if (item.action === "logout") handleLogout();
+                                else navigate(item.path);
+                                setMobileOpen(false);
+                            }}
+                            sx={{
+                                borderRadius: 1,
+                                "&:hover": { bgcolor: "#e3f2fd" },
+                            }}
+                            data-testid={`sidebar-item-${item.text.toLowerCase()}`}
+                        >
+                            <ListItemIcon
                                 sx={{
-                                    minHeight: 48,
-                                    justifyContent:
-                                        sidebarExpanded || isMobile
-                                            ? "initial"
-                                            : "center",
-                                    px: 2.5,
-                                    "&:hover": {
-                                        backgroundColor:
-                                            "rgba(4, 54, 100, 0.08)",
-                                    },
+                                    color: "#1976d2",
+                                    minWidth:
+                                        sidebarExpanded || isMobile ? 56 : 40,
                                 }}
                             >
-                                {(sidebarExpanded || isMobile) && (
-                                    <ListItemText
-                                        primary={item.text}
-                                        sx={{
-                                            color: "var(--primary-color)",
-                                            opacity:
-                                                sidebarExpanded || isMobile
-                                                    ? 1
-                                                    : 0,
-                                        }}
-                                    />
-                                )}
-                            </ListItem>
-                        ))}
-                    </>
+                                {item.icon}
+                            </ListItemIcon>
+                            {(sidebarExpanded || isMobile) && (
+                                <ListItemText
+                                    primary={item.text}
+                                    sx={{ color: "#1976d2" }}
+                                />
+                            )}
+                        </ListItem>
+                    )
                 )}
+                {!user &&
+                    authItems.map((item, index) => (
+                        <ListItem
+                            key={`auth-${index}`}
+                            button
+                            onClick={() => {
+                                navigate(item.path);
+                                setMobileOpen(false);
+                            }}
+                            sx={{
+                                borderRadius: 1,
+                                "&:hover": { bgcolor: "#e3f2fd" },
+                            }}
+                            data-testid={`sidebar-item-${item.text.toLowerCase()}`}
+                        >
+                            <ListItemIcon
+                                sx={{
+                                    color: "#1976d2",
+                                    minWidth:
+                                        sidebarExpanded || isMobile ? 56 : 40,
+                                }}
+                            >
+                                <PersonIcon />
+                            </ListItemIcon>
+                            {(sidebarExpanded || isMobile) && (
+                                <ListItemText
+                                    primary={item.text}
+                                    sx={{ color: "#1976d2" }}
+                                />
+                            )}
+                        </ListItem>
+                    ))}
             </List>
         </Box>
     );
@@ -248,88 +204,66 @@ const Layout = () => {
     return (
         <Box
             sx={{
-                background: "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
-                minHeight: "100vh",
-                width: "100%",
                 display: "flex",
                 flexDirection: "column",
+                minHeight: "100vh",
+                bgcolor: "#f5f5f5",
             }}
         >
             <AppBar
                 position="sticky"
                 sx={{
-                    width: "100%",
-                    background:
-                        "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
-                    boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    bgcolor: "#1976d2",
+                    boxShadow: "none",
+                    borderBottom: "1px solid #e0e0e0",
                 }}
             >
-                <Toolbar sx={{ flexWrap: "wrap" }}>
+                <Toolbar>
                     <IconButton
                         edge="start"
-                        sx={{ color: "#fcffff", mr: 2 }}
+                        color="inherit"
                         onClick={handleDrawerToggle}
+                        sx={{ mr: 2 }}
+                        data-testid="menu-toggle"
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Box
+                    <Typography
                         component={Link}
                         to="/"
+                        variant="h6"
                         sx={{
-                            display: "flex",
-                            alignItems: "center",
+                            color: "white",
                             textDecoration: "none",
+                            flexGrow: 1,
                         }}
                     >
-                        <img
-                            src=""
-                            alt="VidTube Logo"
-                            style={{ height: 40, marginRight: 8 }}
-                        />
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: "#fcffff",
-                                display: { xs: "none", sm: "block" },
-                                fontWeight: "bold",
-                            }}
-                        >
-                            VidTube
-                        </Typography>
-                    </Box>
-                    <Box sx={{ flexGrow: 1 }} />
+                        VidTube
+                    </Typography>
                     {!isMobile && (
                         <>
                             <Box
                                 sx={{
-                                    background: "rgba(255,255,255,0.15)",
-                                    borderRadius: 2,
-                                    px: 2,
-                                    py: 0.5,
                                     display: "flex",
                                     alignItems: "center",
+                                    bgcolor: "rgba(255, 255, 255, 0.2)",
+                                    borderRadius: 1,
+                                    px: 2,
                                     mr: 2,
-                                    minWidth: 280,
                                 }}
                             >
-                                <SearchIcon sx={{ color: "#fff", mr: 1 }} />
+                                <SearchIcon sx={{ color: "white" }} />
                                 <InputBase
                                     placeholder="Search"
-                                    sx={{ color: "#fff", width: "100%" }}
+                                    sx={{ color: "white", ml: 1, flex: 1 }}
+                                    data-testid="search-input"
                                 />
                             </Box>
-                            <IconButton sx={{ color: "#fff", mr: 1 }}>
-                                <NotificationsIcon />
-                            </IconButton>
                             {user ? (
                                 <>
                                     <Button
-                                        onClick={(e) =>
-                                            setProfileMenuEl(e.currentTarget)
-                                        }
                                         sx={{
-                                            color: "#fff",
+                                            color: "white",
                                             textTransform: "none",
                                         }}
                                         startIcon={
@@ -338,6 +272,10 @@ const Layout = () => {
                                                 sx={{ width: 24, height: 24 }}
                                             />
                                         }
+                                        onClick={(e) =>
+                                            setProfileMenuEl(e.currentTarget)
+                                        }
+                                        data-testid="profile-menu-button"
                                     >
                                         {user.fullName || user.username}
                                     </Button>
@@ -345,41 +283,24 @@ const Layout = () => {
                                         anchorEl={profileMenuEl}
                                         open={Boolean(profileMenuEl)}
                                         onClose={() => setProfileMenuEl(null)}
+                                        data-testid="profile-menu"
                                     >
                                         <MenuItem
                                             onClick={() => {
                                                 setProfileMenuEl(null);
                                                 navigate("/profile");
                                             }}
+                                            data-testid="menu-profile"
                                         >
-                                            <PersonIcon
-                                                fontSize="small"
-                                                style={{ marginRight: 8 }}
-                                            />{" "}
                                             Profile
-                                        </MenuItem>
-                                        <MenuItem
-                                            onClick={() => {
-                                                setProfileMenuEl(null);
-                                                navigate("/settings");
-                                            }}
-                                        >
-                                            <SettingsIcon
-                                                fontSize="small"
-                                                style={{ marginRight: 8 }}
-                                            />{" "}
-                                            Settings
                                         </MenuItem>
                                         <MenuItem
                                             onClick={() => {
                                                 setProfileMenuEl(null);
                                                 handleLogout();
                                             }}
+                                            data-testid="menu-logout"
                                         >
-                                            <LogoutIcon
-                                                fontSize="small"
-                                                style={{ marginRight: 8 }}
-                                            />{" "}
                                             Logout
                                         </MenuItem>
                                     </Menu>
@@ -387,14 +308,16 @@ const Layout = () => {
                             ) : (
                                 <>
                                     <Button
-                                        sx={{ color: "#fff" }}
+                                        sx={{ color: "white" }}
                                         onClick={() => navigate("/login")}
+                                        data-testid="login-button"
                                     >
                                         Login
                                     </Button>
                                     <Button
-                                        sx={{ color: "#fff" }}
+                                        sx={{ color: "white" }}
                                         onClick={() => navigate("/register")}
+                                        data-testid="register-button"
                                     >
                                         Register
                                     </Button>
@@ -412,9 +335,8 @@ const Layout = () => {
                     onClose={handleDrawerToggle}
                     sx={{
                         "& .MuiDrawer-paper": {
-                            background:
-                                "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
-                            boxShadow: "0 6px 20px rgba(4, 54, 100, 0.15)",
+                            width: 240,
+                            bgcolor: "#f5f5f5",
                         },
                     }}
                 >
@@ -425,14 +347,11 @@ const Layout = () => {
                     variant="permanent"
                     sx={{
                         width: sidebarWidth,
-                        flexShrink: 0,
-                        [`& .MuiDrawer-paper`]: {
+                        "& .MuiDrawer-paper": {
                             width: sidebarWidth,
-                            boxSizing: "border-box",
-                            background:
-                                "linear-gradient(135deg, #fcffff 0%, #e6f0fa 100%)",
+                            bgcolor: "#f5f5f5",
+                            borderRight: "1px solid #e0e0e0",
                             transition: "width 0.3s ease",
-                            overflowX: "hidden",
                         },
                     }}
                 >
@@ -441,19 +360,12 @@ const Layout = () => {
             )}
 
             <Container
-                component="main"
                 sx={{
-                    mt: { xs: 2, sm: 3, md: 4 },
-                    mb: 4,
                     flex: 1,
-                    width: "100%",
+                    mt: 2,
+                    ml: { md: `${sidebarWidth}px` },
                     maxWidth: "100%",
-                    px: { xs: 2, sm: 3, md: 4 },
-                    ml: {
-                        xs: 0,
-                        sm: 0,
-                        md: `${sidebarWidth}px`,
-                    },
+                    px: { xs: 2, sm: 3 },
                     transition: "margin-left 0.3s ease",
                 }}
             >
@@ -463,20 +375,11 @@ const Layout = () => {
             <Box
                 component="footer"
                 sx={{
-                    py: 3,
-                    px: { xs: 2, sm: 3 },
-                    mt: "auto",
-                    background:
-                        "linear-gradient(45deg, var(--primary-color) 30%, var(--secondary-color) 90%)",
-                    color: "#fcffff",
+                    bgcolor: "#1976d2",
+                    color: "white",
+                    py: 2,
                     textAlign: "center",
-                    borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-                    ml: {
-                        xs: 0,
-                        sm: 0,
-                        md: `${sidebarWidth}px`,
-                    },
-                    transition: "margin-left 0.3s ease",
+                    mt: "auto",
                 }}
             >
                 <Typography variant="body2">
