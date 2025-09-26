@@ -16,30 +16,27 @@ const VideoListPage = () => {
     const { user } = useAuth();
     const isMobile = useMediaQuery("(max-width:600px)");
     const { videos, isLoading, error, pages, setPages, hasMore, loadVideos } =
-        useVideos({
-            userId: user?._id,
-        });
+        useVideos({ userId: user?._id });
 
     useEffect(() => {
-        if (user?._id) {
-            loadVideos();
-        }
-    }, [user?._id]); // Only depend on user ID
+        if (user?._id) loadVideos();
+    }, [user?._id]);
 
     if (!user) {
         return (
             <Box
                 sx={{
-                    p: { xs: 2, sm: 3, md: 4 },
+                    p: 2,
                     textAlign: "center",
-                    backgroundColor: "var(--background-color)",
+                    bgcolor: "white",
                     borderRadius: 2,
-                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid #e0e0e0",
                 }}
             >
                 <Typography
-                    variant={isMobile ? "h5" : "h4"}
-                    sx={{ color: "var(--primary-color)" }}
+                    variant="h5"
+                    sx={{ color: "#1976d2" }}
+                    data-testid="login-required"
                 >
                     Please log in to view your videos
                 </Typography>
@@ -50,43 +47,30 @@ const VideoListPage = () => {
     if (isLoading && pages === 1) {
         return (
             <CircularProgress
-                sx={{
-                    display: "block",
-                    mx: "auto",
-                    my: 2,
-                    color: "var(--secondary-color)",
-                }}
+                sx={{ display: "block", mx: "auto", my: 2, color: "#1976d2" }}
+                data-testid="loading"
             />
         );
     }
 
     if (error) {
         return (
-            <Alert severity="error" sx={{ maxWidth: 600, mx: "auto" }}>
+            <Alert
+                severity="error"
+                sx={{ maxWidth: 600, mx: "auto", borderRadius: 2 }}
+                data-testid="error-alert"
+            >
                 {error}
             </Alert>
         );
     }
 
     return (
-        <Box
-            sx={{
-                p: { xs: 2, sm: 3, md: 4 },
-                width: "100%",
-                maxWidth: "100%",
-                backgroundColor: "var(--background-color)",
-                borderRadius: 2,
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-            }}
-        >
+        <Box sx={{ p: 2, bgcolor: "#f5f5f5" }}>
             <Typography
-                variant={isMobile ? "h5" : "h4"}
-                gutterBottom
-                sx={{
-                    color: "var(--primary-color)",
-                    textAlign: { xs: "center", sm: "left" },
-                    fontWeight: "bold",
-                }}
+                variant="h5"
+                sx={{ color: "#1976d2", mb: 2, fontWeight: 600 }}
+                data-testid="videos-title"
             >
                 Your Videos
             </Typography>
@@ -100,7 +84,7 @@ const VideoListPage = () => {
                             display: "block",
                             mx: "auto",
                             my: 2,
-                            color: "var(--secondary-color)",
+                            color: "#1976d2",
                         }}
                     />
                 }
