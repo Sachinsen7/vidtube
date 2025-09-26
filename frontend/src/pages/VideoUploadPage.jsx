@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import {
     Box,
     Typography,
+    TextField,
+    Button,
     CircularProgress,
     Alert,
     useMediaQuery,
 } from "@mui/material";
 import { useAuth } from "../hooks/useAuth";
 import { useVideos } from "../hooks/useVideo";
-import Button from "../components/common/Button";
-import Input from "../components/common/Input";
 
 const VideoUploadPage = () => {
     const { user } = useAuth();
@@ -28,16 +28,17 @@ const VideoUploadPage = () => {
         return (
             <Box
                 sx={{
-                    p: { xs: 2, sm: 3, md: 4 },
+                    p: 2,
                     textAlign: "center",
-                    backgroundColor: "var(--background-color)",
+                    bgcolor: "white",
                     borderRadius: 2,
-                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                    border: "1px solid #e0e0e0",
                 }}
             >
                 <Typography
-                    variant={isMobile ? "h5" : "h4"}
-                    sx={{ color: "var(--primary-color)" }}
+                    variant="h5"
+                    sx={{ color: "#1976d2" }}
+                    data-testid="login-required"
                 >
                     Please log in to upload videos
                 </Typography>
@@ -72,74 +73,98 @@ const VideoUploadPage = () => {
             component="form"
             onSubmit={handleSubmit}
             sx={{
-                maxWidth: { xs: "100%", sm: 600 },
-                width: "100%",
+                maxWidth: 600,
                 mx: "auto",
-                p: { xs: 2, sm: 3 },
-                backgroundColor: "var(--background-color)",
+                p: 2,
+                bgcolor: "white",
                 borderRadius: 2,
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+                border: "1px solid #e0e0e0",
             }}
         >
             <Typography
                 variant={isMobile ? "h5" : "h4"}
-                gutterBottom
-                sx={{
-                    color: "var(--primary-color)",
-                    textAlign: { xs: "center", sm: "left" },
-                    fontWeight: "bold",
-                }}
+                sx={{ color: "#1976d2", mb: 2, fontWeight: 600 }}
+                data-testid="upload-title"
             >
                 Upload Video
             </Typography>
             {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
+                <Alert
+                    severity="error"
+                    sx={{ mb: 2, borderRadius: 2 }}
+                    data-testid="error-alert"
+                >
                     {error}
                 </Alert>
             )}
-            <Input
+            <TextField
                 label="Title"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
+                fullWidth
                 required
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 2,
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="title-input"
             />
-            <Input
+            <TextField
                 label="Description"
                 name="description"
                 multiline
                 rows={4}
                 value={formData.description}
                 onChange={handleChange}
-                sx={{ mb: 2 }}
+                fullWidth
+                sx={{
+                    mb: 2,
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="description-input"
             />
-            <Input
+            <TextField
                 label="Video File"
                 name="videoFile"
                 type="file"
-                accept="video/*"
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ accept: "video/*" }}
                 onChange={handleChange}
+                fullWidth
                 required
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 2,
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="video-file-input"
             />
-            <Input
+            <TextField
                 label="Thumbnail"
                 name="thumbnail"
                 type="file"
-                accept="image/*"
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ accept: "image/*" }}
                 onChange={handleChange}
-                sx={{ mb: 2 }}
+                fullWidth
+                sx={{
+                    mb: 2,
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="thumbnail-input"
             />
             <Button
                 type="submit"
                 disabled={isLoading}
-                sx={{
-                    backgroundColor: "var(--secondary-color)",
-                    "&:hover": { backgroundColor: "#e04416" },
-                }}
+                variant="contained"
+                sx={{ bgcolor: "#1976d2", borderRadius: 1 }}
+                data-testid="upload-button"
             >
-                {isLoading ? <CircularProgress size={24} /> : "Upload Video"}
+                {isLoading ? (
+                    <CircularProgress size={24} sx={{ color: "white" }} />
+                ) : (
+                    "Upload Video"
+                )}
             </Button>
         </Box>
     );
