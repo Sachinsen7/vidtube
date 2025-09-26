@@ -67,7 +67,9 @@ const TweetForm = ({ userId }) => {
     return (
         <Box component="form" onSubmit={handleSubmit}>
             {user && (
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Box
+                    sx={{ display: "flex", alignItems: "center", mb: 2, mt: 5 }}
+                >
                     <Avatar
                         src={user.avatar}
                         sx={{ width: 40, height: 40, mr: 2 }}
