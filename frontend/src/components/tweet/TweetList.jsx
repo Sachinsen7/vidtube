@@ -57,6 +57,7 @@ const TweetList = ({ userId }) => {
             sx={{
                 bgcolor: "white",
                 p: 3,
+                mt: 2,
                 borderRadius: 2,
                 border: "1px solid #e0e0e0",
             }}
