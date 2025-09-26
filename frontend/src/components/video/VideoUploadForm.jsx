@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Box, Typography, CircularProgress, Alert } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Button,
+    Alert,
+    Typography,
+    CircularProgress,
+} from "@mui/material";
 import { useVideos } from "../../hooks/useVideo";
-import Button from "../common/Button";
-import Input from "../common/Input";
 
 const VideoUploadForm = () => {
     const [formData, setFormData] = useState({
@@ -41,61 +46,96 @@ const VideoUploadForm = () => {
         <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{
-                maxWidth: { xs: "100%", sm: 600 },
-                width: "100%",
-                mx: "auto",
-                p: 2,
-            }}
+            sx={{ maxWidth: 600, mx: "auto" }}
         >
             <Typography
                 variant="h6"
-                gutterBottom
-                sx={{ color: "var(--primary-color)" }}
+                sx={{ color: "#1976d2", mb: 2 }}
+                data-testid="upload-title"
             >
                 Upload Video
             </Typography>
             {error && (
-                <Alert severity="error" sx={{ mb: 2 }}>
+                <Alert
+                    severity="error"
+                    sx={{ mb: 2, borderRadius: 2 }}
+                    data-testid="error-alert"
+                >
                     {error}
                 </Alert>
             )}
-            <Input
+            <TextField
                 label="Title"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
+                fullWidth
                 required
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="title-input"
             />
-            <Input
+            <TextField
                 label="Description"
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
                 multiline
                 rows={4}
-                sx={{ mb: 2 }}
+                fullWidth
+                sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="description-input"
             />
-            <Input
+            <TextField
                 label="Video File"
                 name="videoFile"
                 type="file"
-                accept="video/*"
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ accept: "video/*" }}
                 onChange={handleChange}
+                fullWidth
                 required
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="video-file-input"
             />
-            <Input
+            <TextField
                 label="Thumbnail"
                 name="thumbnail"
                 type="file"
-                accept="image/*"
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ accept: "image/*" }}
                 onChange={handleChange}
-                sx={{ mb: 2 }}
+                fullWidth
+                sx={{
+                    mb: 2,
+                    "& .MuiOutlinedInput-root": { borderRadius: 2 },
+                    "& .Mui-focused fieldset": { borderColor: "#1976d2" },
+                }}
+                data-testid="thumbnail-input"
             />
-            <Button type="submit" disabled={isLoading}>
-                {isLoading ? <CircularProgress size={24} /> : "Upload Video"}
+            <Button
+                type="submit"
+                disabled={isLoading}
+                variant="contained"
+                sx={{ bgcolor: "#1976d2", borderRadius: 2 }}
+                data-testid="upload-button"
+            >
+                {isLoading ? (
+                    <CircularProgress size={24} sx={{ color: "white" }} />
+                ) : (
+                    "Upload Video"
+                )}
             </Button>
         </Box>
     );
