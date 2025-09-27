@@ -208,6 +208,7 @@ const Layout = () => {
                 flexDirection: "column",
                 minHeight: "100vh",
                 bgcolor: "#f5f5f5",
+                ml: "20px",
             }}
         >
             <AppBar
