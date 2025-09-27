@@ -28,7 +28,7 @@ const Home = () => {
     }, []);
 
     return (
-        <Box sx={{ bgcolor: "#f5f5f5", py: 2 }}>
+        <Box sx={{ bgcolor: "#f5f5f5", py: 2, mr: "10px" }}>
             <Container sx={{ py: 2 }}>
                 <Box
                     sx={{
