@@ -150,12 +150,16 @@ const TweetCard = ({ tweet, userId }) => {
                         >
                             <IconButton
                                 size="small"
-                                onClick={(e) => {
+                                onClick={async (e) => {
                                     e.stopPropagation();
-                                    toggleTweetLike(
-                                        tweet._id,
-                                        Boolean(tweet.isLiked)
-                                    );
+                                    try {
+                                        await toggleTweetLike(
+                                            tweet._id,
+                                            Boolean(tweet.isLiked)
+                                        );
+                                    } catch (error) {
+                                        console.error('Failed to toggle tweet like:', error);
+                                    }
                                 }}
                                 sx={{
                                     color: tweet.isLiked
@@ -165,6 +169,9 @@ const TweetCard = ({ tweet, userId }) => {
                             >
                                 <FavoriteIcon fontSize="small" />
                             </IconButton>
+                            <Typography variant="caption" sx={{ ml: 0.5 }}>
+                                {tweet.likesCount || 0}
+                            </Typography>
                         </Box>
                     </Box>
                     <IconButton
