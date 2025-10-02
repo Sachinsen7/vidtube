@@ -38,7 +38,7 @@ const Layout = () => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const isMobile = useMediaQuery("(max-width:600px)");
     const [profileMenuEl, setProfileMenuEl] = useState(null);
-    const [sidebarExpanded, setSidebarExpanded] = useState(false);
+    const [sidebarExpanded, setSidebarExpanded] = useState(true);
 
     const handleLogout = async () => {
         await logout();
@@ -50,12 +50,16 @@ const Layout = () => {
         setMobileOpen(!mobileOpen);
     };
 
+    const handleSidebarToggle = () => {
+        setSidebarExpanded(!sidebarExpanded);
+    };
+
     const handleSidebarMouseEnter = () => {
-        if (!isMobile) setSidebarExpanded(true);
+        if (!isMobile && !sidebarExpanded) setSidebarExpanded(true);
     };
 
     const handleSidebarMouseLeave = () => {
-        if (!isMobile) setSidebarExpanded(false);
+        if (!isMobile && sidebarExpanded) setSidebarExpanded(false);
     };
 
     const sidebarWidth = sidebarExpanded ? 240 : 72;
@@ -223,7 +227,7 @@ const Layout = () => {
                     <IconButton
                         edge="start"
                         color="inherit"
-                        onClick={handleDrawerToggle}
+                        onClick={isMobile ? handleDrawerToggle : handleSidebarToggle}
                         sx={{ mr: 2 }}
                         data-testid="menu-toggle"
                     >

@@ -16,6 +16,7 @@
         "@hello-pangea/dnd": "^18.0.1",
         "@mui/icons-material": "^7.3.2",
         "@mui/material": "^7.3.2",
+        "@videojs/themes": "^1.0.1",
         "axios": "^1.11.0",
         "framer-motion": "^12.23.12",
         "react": "^19.1.1",
@@ -26,6 +27,7 @@
         "react-quill-new": "^3.6.0",
         "react-router-dom": "^7.8.2",
         "react-window": "^2.1.0",
+        "video.js": "^8.23.4",
         "zustand": "^5.0.8"
     },
     "devDependencies": {
