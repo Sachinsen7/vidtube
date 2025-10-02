@@ -19,6 +19,9 @@ import {
     Share as ShareIcon,
     BookmarkBorder as SaveIcon,
 } from "@mui/icons-material";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+import useLikeStore from "../../stores/likeStore";
 
 const VideoPlayer = ({ video }) => {
     const theme = useTheme();
@@ -27,11 +30,50 @@ const VideoPlayer = ({ video }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const [videoLoaded, setVideoLoaded] = useState(false);
     const videoRef = useRef(null);
+    const playerRef = useRef(null);
+    const { toggleVideoLike } = useLikeStore();
+    const [liked, setLiked] = useState(Boolean(video?.isLiked));
+    const [likesCount, setLikesCount] = useState(video?.likesCount || 0);
 
     useEffect(() => {
         if (video) {
             setTimeout(() => setVideoLoaded(true), 100);
+            setLiked(Boolean(video.isLiked));
+            setLikesCount(video.likesCount || 0);
         }
+    }, [video]);
+
+    useEffect(() => {
+        if (!video?.videoFile || !videoRef.current) return;
+
+        // Initialize Video.js player
+        if (!playerRef.current) {
+            playerRef.current = videojs(videoRef.current, {
+                controls: true,
+                responsive: true,
+                fluid: true,
+                playbackRates: [0.5, 1, 1.25, 1.5, 2],
+                poster: video.thumbnail || video.previewImage || "/Frame.png",
+                sources: [{
+                    src: video.videoFile,
+                    type: 'video/mp4'
+                }]
+            });
+
+            playerRef.current.on('error', () => {
+                setErr('Failed to load video');
+            });
+
+            playerRef.current.on('play', () => setIsPlaying(true));
+            playerRef.current.on('pause', () => setIsPlaying(false));
+        }
+
+        return () => {
+            if (playerRef.current) {
+                playerRef.current.dispose();
+                playerRef.current = null;
+            }
+        };
     }, [video]);
 
     if (!video) {
@@ -71,18 +113,29 @@ const VideoPlayer = ({ video }) => {
     }
 
     const handlePlayPause = () => {
-        if (videoRef.current) {
+        if (playerRef.current) {
             if (isPlaying) {
-                videoRef.current.pause();
+                playerRef.current.pause();
             } else {
-                videoRef.current.play();
+                playerRef.current.play();
             }
-            setIsPlaying(!isPlaying);
         }
     };
 
     const handleVideoClick = () => {
         handlePlayPause();
+    };
+
+    const handleLike = async () => {
+        try {
+            const result = await toggleVideoLike(video._id, liked);
+            if (result) {
+                setLiked(result.liked);
+                setLikesCount(result.likesCount);
+            }
+        } catch (error) {
+            console.error('Failed to toggle like:', error);
+        }
     };
 
     return (
@@ -98,21 +151,14 @@ const VideoPlayer = ({ video }) => {
                 }}
                 onClick={handleVideoClick}
             >
-                <Box
-                    component="video"
+                <video
                     ref={videoRef}
-                    src={videoUrl}
-                    controls
-                    sx={{
+                    className="video-js vjs-default-skin"
+                    data-setup="{}"
+                    style={{
                         width: "100%",
                         height: isMobile ? 200 : 400,
-                        objectFit: "cover",
-                        display: "block",
                     }}
-                    onError={() => setErr("Failed to load video")}
-                    onLoadedData={() => setErr(null)}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
                     data-testid="video-element"
                 />
                 <Box
@@ -221,13 +267,15 @@ const VideoPlayer = ({ video }) => {
                     >
                         <Chip
                             icon={<LikeIcon />}
-                            label={`${video.likesCount || 0} likes`}
+                            label={`${likesCount} likes`}
                             variant="outlined"
                             clickable
+                            onClick={handleLike}
                             sx={{
-                                borderColor: "#1976d2",
-                                color: "#1976d2",
-                                "&:hover": { bgcolor: "#e3f2fd" },
+                                borderColor: liked ? "#e91e63" : "#1976d2",
+                                color: liked ? "#e91e63" : "#1976d2",
+                                bgcolor: liked ? "rgba(233, 30, 99, 0.1)" : "transparent",
+                                "&:hover": { bgcolor: liked ? "rgba(233, 30, 99, 0.2)" : "#e3f2fd" },
                             }}
                             data-testid="like-button"
                         />
