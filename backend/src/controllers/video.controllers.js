@@ -50,6 +50,8 @@ const publishAVideo = asyncHandler(async (req, res) => {
     }
 
     const videoFilePath = req.files?.videoFile?.[0]?.path;
+    const thumbnailFilePath = req.files?.thumbnail?.[0]?.path;
+    
     if (!videoFilePath) {
         throw new ApiError(400, "Video file is required");
     }
@@ -59,10 +61,17 @@ const publishAVideo = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Failed to upload video");
     }
 
+    let thumbnailUrl = null;
+    if (thumbnailFilePath) {
+        const uploadedThumbnail = await uploadOnCloudinary(thumbnailFilePath);
+        thumbnailUrl = uploadedThumbnail?.url;
+    }
+
     const video = await VideoModel.create({
         title,
         description,
         videoFile: uploadedVideo.url,
+        thumbnail: thumbnailUrl,
         duration: uploadedVideo.duration || 0,
         owner: req.user._id,
     });
